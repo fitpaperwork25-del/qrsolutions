@@ -39,7 +39,7 @@ export default function App() {
         {/* Customer — QR scan entry point */}
         <Route path="/scan/:bizId/:locationSlug" element={<ScanPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
+<Route path="/" element={<Navigate to="/register" replace />} />
         {/* Staff */}
         <Route path="/staff/login"    element={<LoginPage />} />
         <Route path="/staff/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
