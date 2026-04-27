@@ -1,24 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [active, setActive] = useState(0);
-
-  // simple animation loop
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActive((prev) => (prev + 1) % 9);
-    }, 400);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
-    <div style={styles.container}>
+    <div style={styles.page}>
       {/* HEADER */}
       <div style={styles.header}>
         <div style={styles.logo}>QRS</div>
-
         <button style={styles.login} onClick={() => navigate("/login")}>
           Log In
         </button>
@@ -35,14 +24,14 @@ export default function LandingPage() {
           </h1>
 
           <p style={styles.subtitle}>
-            QR codes for your restaurant, business, event, or anything. If it
-            exists, we can put a square on it.
+            Turn any business into a smart, scannable experience — menus,
+            bookings, orders, and more — all from one QR-powered platform.
           </p>
 
-          <div style={styles.ctaRow}>
+          <div style={styles.buttons}>
             <button
               style={styles.primary}
-              onClick={() => navigate("/register?plan=free")}
+              onClick={() => navigate("/register")}
             >
               Start Free
             </button>
@@ -56,24 +45,27 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* RIGHT (ANIMATED QR) */}
+        {/* RIGHT VISUAL */}
         <div style={styles.right}>
-          <div style={styles.qrVisual}>
-            {[...Array(9)].map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  ...styles.qrCell,
-                  background:
-                    i === active
-                      ? "#f5c542"
-                      : i % 2 === 0
-                      ? "#f5c54233"
-                      : "transparent",
-                  transform: i === active ? "scale(1.2)" : "scale(1)",
-                  transition: "all 0.3s ease",
-                }}
-              />
+          <div style={styles.visual}>
+            {[0, 1, 2].map((row) => (
+              <div key={row} style={styles.row}>
+                {[0, 1, 2].map((col) => {
+                  const index = row * 3 + col;
+
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        ...styles.block,
+                        ...(index % 2 === 0
+                          ? styles.blockGold
+                          : styles.blockOutline),
+                      }}
+                    />
+                  );
+                })}
+              </div>
             ))}
           </div>
         </div>
@@ -82,12 +74,14 @@ export default function LandingPage() {
   );
 }
 
+const gold = "#f5c542";
+
 const styles = {
-  container: {
+  page: {
+    minHeight: "100vh",
     background: "#000",
     color: "#fff",
-    minHeight: "100vh",
-    padding: "40px",
+    padding: "40px 60px",
     fontFamily: "Arial, sans-serif",
   },
 
@@ -95,66 +89,73 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: "60px",
   },
 
   logo: {
+    fontSize: "26px",
     fontWeight: "bold",
-    fontSize: "24px",
+    letterSpacing: "2px",
   },
 
   login: {
     background: "transparent",
-    border: "1px solid #f5c542",
-    color: "#f5c542",
-    padding: "8px 16px",
+    border: `1px solid ${gold}`,
+    color: gold,
+    padding: "10px 20px",
     cursor: "pointer",
+    fontWeight: "bold",
   },
 
   hero: {
-    display: "flex",
-    marginTop: "80px",
-    justifyContent: "space-between",
+    display: "grid",
+    gridTemplateColumns: "1.2fr 0.8fr",
     alignItems: "center",
+    gap: "60px",
   },
 
   left: {
-    maxWidth: "600px",
+    maxWidth: "650px",
   },
 
   badge: {
-    background: "#f5c542",
+    background: gold,
     color: "#000",
     display: "inline-block",
-    padding: "6px 12px",
+    padding: "6px 14px",
     fontSize: "12px",
-    marginBottom: "20px",
+    letterSpacing: "3px",
+    marginBottom: "24px",
+    fontWeight: "bold",
   },
 
   title: {
-    fontSize: "64px",
-    lineHeight: "1.1",
+    fontSize: "72px",
+    lineHeight: "1.05",
     marginBottom: "20px",
+    fontWeight: "900",
   },
 
   gold: {
-    color: "#f5c542",
+    color: gold,
   },
 
   subtitle: {
-    color: "#aaa",
+    color: "#bbb",
+    fontSize: "20px",
+    lineHeight: "1.5",
     marginBottom: "30px",
-    fontSize: "18px",
   },
 
-  ctaRow: {
+  buttons: {
     display: "flex",
-    gap: "12px",
+    gap: "14px",
   },
 
   primary: {
-    background: "#f5c542",
+    background: gold,
     color: "#000",
-    padding: "14px 24px",
+    padding: "14px 26px",
     border: "none",
     fontWeight: "bold",
     cursor: "pointer",
@@ -162,28 +163,42 @@ const styles = {
 
   secondary: {
     background: "transparent",
-    border: "1px solid #f5c542",
-    color: "#f5c542",
-    padding: "14px 24px",
+    color: gold,
+    padding: "14px 26px",
+    border: `1px solid ${gold}`,
+    fontWeight: "bold",
     cursor: "pointer",
   },
 
   right: {
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
-    minWidth: "280px",
   },
 
-  qrVisual: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 60px)",
-    gap: "12px",
+  visual: {
+    border: `2px solid ${gold}`,
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "14px",
+    boxShadow: "0 0 40px rgba(245,197,66,0.2)",
   },
 
-  qrCell: {
-    width: "60px",
-    height: "60px",
-    border: "3px solid #f5c542",
+  row: {
+    display: "flex",
+    gap: "14px",
+  },
+
+  block: {
+    width: "70px",
+    height: "70px",
+  },
+
+  blockGold: {
+    background: gold,
+  },
+
+  blockOutline: {
+    border: `2px solid ${gold}`,
   },
 };
