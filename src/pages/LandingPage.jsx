@@ -1,181 +1,207 @@
 import { useNavigate } from "react-router-dom";
-import QRCodeBox from "../components/QRCodeBox";
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
     <div style={styles.page}>
-      <header style={styles.header}>
-        <div style={styles.brand}>
-          <div style={styles.qLogo}>Q</div>
-          <span>RS</span>
+      {/* HEADER */}
+      <div style={styles.header}>
+        <div style={styles.logoWrap}>
+          <div style={styles.logoBox}>Q</div>
+          <div style={styles.logoText}>RS</div>
         </div>
 
         <button style={styles.login} onClick={() => navigate("/login")}>
           Log In
         </button>
-      </header>
+      </div>
 
-      <main style={styles.hero}>
-        <section style={styles.left}>
+      {/* HERO */}
+      <div style={styles.hero}>
+        {/* LEFT */}
+        <div style={styles.left}>
           <div style={styles.badge}>QR Solutions</div>
 
           <h1 style={styles.title}>
-            We <span style={styles.gold}>Square</span>
-            <br />
-            You.
+            We Square You.
           </h1>
 
           <p style={styles.subtitle}>
-            Turn any business into a smart, scannable experience — menus,
-            bookings, orders, and customer action from one QR-powered platform.
+            Turn any business into a smart, scannable experience —
+            menus, bookings, orders, and customer action from one QR-powered platform.
           </p>
 
-          <div style={styles.buttons}>
-            <button
-              style={styles.primary}
-              onClick={() => navigate("/register?plan=free")}
-            >
-              Start Free
-            </button>
-
-            <button
-              style={styles.secondary}
-              onClick={() => navigate("/register?plan=starter")}
-            >
-              $19/mo Plan
-            </button>
+          <div style={styles.cta}>
+            <button style={styles.primary}>Start Free</button>
+            <button style={styles.secondary}>$19/mo Plan</button>
           </div>
-        </section>
+        </div>
 
-        <section style={styles.right}>
-          <QRCodeBox />
-        </section>
-      </main>
+        {/* RIGHT */}
+        <div style={styles.right}>
+          <div style={styles.qrBox}>
+            <div style={styles.qrGlow}></div>
+
+            <div style={styles.qrGrid}>
+              {[...Array(25)].map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    ...styles.qrCell,
+                    background:
+                      [0, 4, 20, 24, 12].includes(i)
+                        ? "#f5c542"
+                        : "transparent",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-const gold = "#f5c542";
-
 const styles = {
   page: {
-    minHeight: "100vh",
-    background:
-      "radial-gradient(circle at 75% 45%, rgba(245,197,66,0.14), transparent 32%), #030303",
+    background: "#000",
     color: "#fff",
-    fontFamily: "Arial, sans-serif",
-    padding: "24px",
+    minHeight: "100vh",
+    padding: "0 5vw",
     boxSizing: "border-box",
     overflowX: "hidden",
   },
 
   header: {
-    minHeight: "64px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: "16px",
+    padding: "20px 0",
   },
 
-  brand: {
+  logoWrap: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    fontSize: "28px",
-    fontWeight: "900",
   },
 
-  qLogo: {
-    width: "44px",
-    height: "44px",
-    border: `4px solid ${gold}`,
-    color: gold,
+  logoBox: {
+    width: "40px",
+    height: "40px",
+    border: "2px solid #f5c542",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontWeight: "900",
+    fontWeight: "bold",
+    color: "#f5c542",
+  },
+
+  logoText: {
+    fontSize: "20px",
+    fontWeight: "bold",
   },
 
   login: {
+    border: "1px solid #f5c542",
     background: "transparent",
-    border: `1px solid ${gold}`,
-    color: gold,
-    padding: "10px 22px",
-    fontWeight: "bold",
+    color: "#f5c542",
+    padding: "8px 16px",
     cursor: "pointer",
   },
 
   hero: {
-    minHeight: "calc(100vh - 120px)",
-    display: "grid",
-    gridTemplateColumns: "1fr",
+    display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: "40px",
-    paddingTop: "28px",
+    flexWrap: "wrap",
+    maxWidth: "1200px",
+    margin: "0 auto",
+    paddingTop: "40px",
   },
 
   left: {
-    maxWidth: "650px",
+    flex: "1 1 500px",
+    maxWidth: "600px",
   },
 
   badge: {
-    color: gold,
-    fontSize: "17px",
+    color: "#f5c542",
+    marginBottom: "20px",
     fontWeight: "bold",
-    marginBottom: "22px",
   },
 
   title: {
-    fontSize: "clamp(42px, 12vw, 82px)",
-    lineHeight: "0.95",
-    margin: "0 0 24px",
-    fontWeight: "900",
-  },
-
-  gold: {
-    color: gold,
+    fontSize: "clamp(36px, 6vw, 72px)",
+    lineHeight: "1.1",
+    marginBottom: "20px",
   },
 
   subtitle: {
-    color: "#d2d2d2",
-    fontSize: "clamp(17px, 4vw, 20px)",
-    lineHeight: "1.45",
+    color: "#aaa",
+    fontSize: "16px",
+    lineHeight: "1.6",
     marginBottom: "30px",
   },
 
-  buttons: {
+  cta: {
     display: "flex",
-    gap: "14px",
+    gap: "15px",
     flexWrap: "wrap",
   },
 
   primary: {
-    background: gold,
+    background: "#f5c542",
     color: "#000",
     border: "none",
-    padding: "15px 32px",
-    fontSize: "16px",
+    padding: "14px 24px",
     fontWeight: "bold",
     cursor: "pointer",
   },
 
   secondary: {
     background: "transparent",
-    color: gold,
-    border: `2px solid ${gold}`,
-    padding: "13px 32px",
-    fontSize: "16px",
-    fontWeight: "bold",
+    border: "1px solid #f5c542",
+    color: "#f5c542",
+    padding: "14px 24px",
     cursor: "pointer",
   },
 
   right: {
+    flex: "1 1 400px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-    paddingBottom: "30px",
+  },
+
+  qrBox: {
+    position: "relative",
+    width: "260px",
+    height: "260px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  qrGlow: {
+    position: "absolute",
+    width: "260px",
+    height: "260px",
+    borderRadius: "20px",
+    background: "radial-gradient(circle, rgba(245,197,66,0.2), transparent)",
+  },
+
+  qrGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 40px)",
+    gap: "10px",
+  },
+
+  qrCell: {
+    width: "40px",
+    height: "40px",
+    border: "2px solid #f5c542",
   },
 };
