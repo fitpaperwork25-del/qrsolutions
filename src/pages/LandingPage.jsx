@@ -1,10 +1,11 @@
 export default function LandingPage() {
+
   // Register redirect
   const goRegister = () => {
     window.location.href = "/register";
   };
 
-  // Stripe payment link (YOUR correct $19.99 link)
+  // Stripe payment link (CORRECT $19.99)
   const goStripe = () => {
     window.location.href = "https://buy.stripe.com/test_7sY6oH4AN2F3cGN3Et5EY00";
   };
@@ -12,8 +13,8 @@ export default function LandingPage() {
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
-        
-        {/* LEFT SIDE */}
+
+        {/* LEFT */}
         <div style={styles.left}>
           <div style={styles.badge}>QR-powered business system</div>
 
@@ -26,12 +27,12 @@ export default function LandingPage() {
           </p>
 
           <div style={styles.cta}>
-            {/* FREE → REGISTER */}
+            {/* FREE */}
             <button style={styles.primary} onClick={goRegister}>
               Start Free
             </button>
 
-            {/* PAID → STRIPE */}
+            {/* STRIPE */}
             <button style={styles.secondary} onClick={goStripe}>
               $19/mo Plan
             </button>
@@ -42,9 +43,10 @@ export default function LandingPage() {
           </p>
         </div>
 
-        {/* RIGHT SIDE (VISUAL) */}
+        {/* RIGHT */}
         <div style={styles.right}>
           <div style={styles.phone}>
+
             <div style={styles.qrBox}>
               <div style={styles.qrGrid}>
                 {[...Array(25)].map((_, i) => (
@@ -70,6 +72,7 @@ export default function LandingPage() {
             <div style={styles.option}>🍽 Menu</div>
             <div style={styles.option}>📅 Booking</div>
             <div style={styles.option}>🔔 Staff Alert</div>
+
           </div>
         </div>
 
