@@ -5,9 +5,10 @@ export default function LandingPage() {
     window.location.href = "/register";
   };
 
-  // Stripe payment link (CORRECT $19.99)
+  // Stripe payment link (FIXED redirect)
   const goStripe = () => {
-    window.location.href = "https://buy.stripe.com/test_7sY6oH4AN2F3cGN3Et5EY00";
+    window.location.href =
+      "https://buy.stripe.com/test_7sY6oH4AN2F3cGN3Et5EY00?success_url=https://qrsolutions-sandbox.vercel.app/dashboard&cancel_url=https://qrsolutions-sandbox.vercel.app";
   };
 
   return (
@@ -34,7 +35,7 @@ export default function LandingPage() {
 
             {/* STRIPE */}
             <button style={styles.secondary} onClick={goStripe}>
-              $19/mo Plan
+              $19.99/mo Plan
             </button>
           </div>
 
