@@ -18,19 +18,17 @@ export default function LandingPage() {
 
       <main style={styles.hero}>
         <section style={styles.left}>
-          <div style={styles.badge}>QR MANAGEMENT PLATFORM</div>
+          <div style={styles.badge}>QR Solutions</div>
 
           <h1 style={styles.title}>
-            We
-            <br />
-            <span>Square</span>
+            We <span>Square</span>
             <br />
             You.
           </h1>
 
           <p style={styles.subtitle}>
             Turn any business into a smart, scannable experience — menus,
-            bookings, orders, and more — all from one QR-powered platform.
+            bookings, orders, and customer action from one QR-powered platform.
           </p>
 
           <div style={styles.buttons}>
@@ -48,14 +46,6 @@ export default function LandingPage() {
               $19/mo Plan
             </button>
           </div>
-
-          <div style={styles.features}>
-            <span>⚡ Fast Setup</span>
-            <span>▌</span>
-            <span>◇ Secure & Reliable</span>
-            <span>▌</span>
-            <span>▥ Built for Business</span>
-          </div>
         </section>
 
         <section style={styles.right}>
@@ -65,19 +55,18 @@ export default function LandingPage() {
             <div style={styles.cornerBL}></div>
             <div style={styles.cornerBR}></div>
 
-            <div style={styles.bigQ}>Q</div>
-
-            <div style={styles.grid}>
-              {Array.from({ length: 52 }).map((_, i) => (
+            <div style={styles.qrGrid}>
+              {qrPattern.map((filled, i) => (
                 <div
                   key={i}
                   style={{
-                    ...styles.square,
-                    ...(i % 3 === 0 ? styles.filled : {}),
-                    ...(i % 5 === 0 ? styles.large : {}),
-                    ...(i % 7 === 0 ? styles.outline : {}),
+                    ...styles.qrCell,
+                    ...(filled ? styles.qrFilled : {}),
+                    ...(i === 0 ? styles.qCell : {}),
                   }}
-                />
+                >
+                  {i === 0 ? "Q" : ""}
+                </div>
               ))}
             </div>
           </div>
@@ -87,21 +76,34 @@ export default function LandingPage() {
   );
 }
 
+const qrPattern = [
+  1, 1, 1, 0, 1, 0, 1, 1, 1,
+  1, 0, 1, 0, 0, 1, 1, 0, 1,
+  1, 1, 1, 1, 0, 1, 0, 1, 1,
+  0, 0, 1, 0, 1, 1, 0, 0, 1,
+  1, 0, 0, 1, 1, 0, 1, 0, 0,
+  0, 1, 1, 0, 0, 1, 0, 1, 1,
+  1, 1, 0, 1, 0, 0, 1, 1, 0,
+  1, 0, 1, 0, 1, 1, 0, 0, 1,
+  1, 1, 1, 0, 1, 0, 1, 1, 1,
+];
+
 const gold = "#f5c542";
 
 const styles = {
   page: {
-    minHeight: "100vh",
+    height: "100vh",
     background:
-      "radial-gradient(circle at 75% 45%, rgba(245,197,66,0.12), transparent 35%), #030303",
+      "radial-gradient(circle at 75% 45%, rgba(245,197,66,0.14), transparent 32%), #030303",
     color: "#fff",
     fontFamily: "Arial, sans-serif",
-    padding: "36px 54px",
+    padding: "28px 54px",
     boxSizing: "border-box",
     overflow: "hidden",
   },
 
   header: {
+    height: "64px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -110,84 +112,78 @@ const styles = {
   brand: {
     display: "flex",
     alignItems: "center",
-    gap: "8px",
-    fontSize: "34px",
+    gap: "10px",
+    fontSize: "32px",
     fontWeight: "900",
-    letterSpacing: "2px",
+    letterSpacing: "1px",
   },
 
   qLogo: {
     width: "44px",
     height: "44px",
-    border: `5px solid ${gold}`,
+    border: `4px solid ${gold}`,
     color: gold,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontWeight: "900",
-    lineHeight: 1,
   },
 
   login: {
     background: "transparent",
     border: `1px solid ${gold}`,
     color: gold,
-    padding: "12px 28px",
-    fontSize: "16px",
+    padding: "10px 24px",
     fontWeight: "bold",
     cursor: "pointer",
   },
 
   hero: {
-    minHeight: "calc(100vh - 90px)",
+    height: "calc(100vh - 92px)",
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "1fr 0.9fr",
     alignItems: "center",
-    gap: "60px",
+    gap: "36px",
   },
 
   left: {
-    maxWidth: "660px",
+    maxWidth: "650px",
   },
 
   badge: {
     color: gold,
-    fontSize: "15px",
-    letterSpacing: "4px",
+    fontSize: "18px",
     fontWeight: "bold",
-    marginBottom: "34px",
+    marginBottom: "24px",
   },
 
   title: {
-    fontSize: "clamp(64px, 8vw, 112px)",
+    fontSize: "clamp(58px, 7vw, 92px)",
     lineHeight: "0.95",
-    margin: "0 0 28px",
+    margin: "0 0 24px",
     fontWeight: "900",
-    letterSpacing: "-4px",
+    letterSpacing: "-3px",
   },
 
-  titleSpan: {},
-
   subtitle: {
-    color: "#d0d0d0",
-    fontSize: "22px",
-    lineHeight: "1.5",
+    color: "#d2d2d2",
+    fontSize: "20px",
+    lineHeight: "1.45",
     maxWidth: "620px",
-    marginBottom: "36px",
+    marginBottom: "30px",
   },
 
   buttons: {
     display: "flex",
     gap: "18px",
-    marginBottom: "56px",
   },
 
   primary: {
     background: gold,
     color: "#000",
     border: "none",
-    padding: "18px 42px",
-    fontSize: "18px",
+    padding: "16px 38px",
+    fontSize: "17px",
     fontWeight: "bold",
     cursor: "pointer",
   },
@@ -196,18 +192,10 @@ const styles = {
     background: "transparent",
     color: gold,
     border: `2px solid ${gold}`,
-    padding: "16px 42px",
-    fontSize: "18px",
+    padding: "14px 38px",
+    fontSize: "17px",
     fontWeight: "bold",
     cursor: "pointer",
-  },
-
-  features: {
-    display: "flex",
-    gap: "18px",
-    color: "#ddd",
-    fontSize: "16px",
-    alignItems: "center",
   },
 
   right: {
@@ -217,9 +205,9 @@ const styles = {
   },
 
   scanFrame: {
+    width: "420px",
+    height: "420px",
     position: "relative",
-    width: "560px",
-    height: "560px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -229,83 +217,70 @@ const styles = {
     position: "absolute",
     top: 0,
     left: 0,
-    width: "70px",
-    height: "70px",
-    borderTop: `5px solid ${gold}`,
-    borderLeft: `5px solid ${gold}`,
+    width: "55px",
+    height: "55px",
+    borderTop: `4px solid ${gold}`,
+    borderLeft: `4px solid ${gold}`,
   },
 
   cornerTR: {
     position: "absolute",
     top: 0,
     right: 0,
-    width: "70px",
-    height: "70px",
-    borderTop: `5px solid ${gold}`,
-    borderRight: `5px solid ${gold}`,
+    width: "55px",
+    height: "55px",
+    borderTop: `4px solid ${gold}`,
+    borderRight: `4px solid ${gold}`,
   },
 
   cornerBL: {
     position: "absolute",
     bottom: 0,
     left: 0,
-    width: "70px",
-    height: "70px",
-    borderBottom: `5px solid ${gold}`,
-    borderLeft: `5px solid ${gold}`,
+    width: "55px",
+    height: "55px",
+    borderBottom: `4px solid ${gold}`,
+    borderLeft: `4px solid ${gold}`,
   },
 
   cornerBR: {
     position: "absolute",
     bottom: 0,
     right: 0,
-    width: "70px",
-    height: "70px",
-    borderBottom: `5px solid ${gold}`,
-    borderRight: `5px solid ${gold}`,
+    width: "55px",
+    height: "55px",
+    borderBottom: `4px solid ${gold}`,
+    borderRight: `4px solid ${gold}`,
   },
 
-  bigQ: {
-    position: "absolute",
-    top: "50px",
-    left: "60px",
-    width: "150px",
-    height: "150px",
-    border: `18px solid ${gold}`,
-    color: gold,
-    fontSize: "96px",
+  qrGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(9, 32px)",
+    gap: "6px",
+  },
+
+  qrCell: {
+    width: "32px",
+    height: "32px",
+    border: `2px solid ${gold}`,
+    boxSizing: "border-box",
+  },
+
+  qrFilled: {
+    background: gold,
+    boxShadow: "0 0 14px rgba(245,197,66,0.18)",
+  },
+
+  qCell: {
+    gridColumn: "1 / span 3",
+    gridRow: "1 / span 3",
+    width: "108px",
+    height: "108px",
+    fontSize: "64px",
     fontWeight: "900",
+    color: "#000",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 0 40px rgba(245,197,66,0.25)",
-  },
-
-  grid: {
-    marginTop: "100px",
-    display: "grid",
-    gridTemplateColumns: "repeat(8, 42px)",
-    gap: "14px",
-  },
-
-  square: {
-    width: "28px",
-    height: "28px",
-    border: `2px solid ${gold}`,
-    opacity: 0.9,
-  },
-
-  filled: {
-    background: gold,
-    boxShadow: "0 0 18px rgba(245,197,66,0.25)",
-  },
-
-  large: {
-    width: "44px",
-    height: "44px",
-  },
-
-  outline: {
-    background: "transparent",
   },
 };
