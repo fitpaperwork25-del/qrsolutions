@@ -1,11 +1,19 @@
 export default function LandingPage() {
+  // Register redirect
   const goRegister = () => {
     window.location.href = "/register";
+  };
+
+  // Stripe payment link (YOUR correct $19.99 link)
+  const goStripe = () => {
+    window.location.href = "https://buy.stripe.com/test_7sY6oH4AN2F3cGN3Et5EY00";
   };
 
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
+        
+        {/* LEFT SIDE */}
         <div style={styles.left}>
           <div style={styles.badge}>QR-powered business system</div>
 
@@ -14,15 +22,17 @@ export default function LandingPage() {
           </h1>
 
           <p style={styles.subtitle}>
-            Turn any restaurant, barbershop, café, or service business into a smart QR experience — menus, bookings, orders, alerts, and customer action in one simple platform.
+            Turn any restaurant, barbershop, café, or service business into a smart QR experience — menus, bookings, and real-time interaction.
           </p>
 
           <div style={styles.cta}>
+            {/* FREE → REGISTER */}
             <button style={styles.primary} onClick={goRegister}>
               Start Free
             </button>
 
-            <button style={styles.secondary} onClick={goRegister}>
+            {/* PAID → STRIPE */}
+            <button style={styles.secondary} onClick={goStripe}>
               $19/mo Plan
             </button>
           </div>
@@ -32,6 +42,7 @@ export default function LandingPage() {
           </p>
         </div>
 
+        {/* RIGHT SIDE (VISUAL) */}
         <div style={styles.right}>
           <div style={styles.phone}>
             <div style={styles.qrBox}>
@@ -52,13 +63,16 @@ export default function LandingPage() {
             </div>
 
             <h3 style={styles.phoneTitle}>Business Menu</h3>
-            <p style={styles.phoneText}>Order, book, or request help instantly.</p>
+            <p style={styles.phoneText}>
+              Order, book, or request help instantly.
+            </p>
 
             <div style={styles.option}>🍽 Menu</div>
             <div style={styles.option}>📅 Booking</div>
             <div style={styles.option}>🔔 Staff Alert</div>
           </div>
         </div>
+
       </section>
     </main>
   );
@@ -132,7 +146,6 @@ const styles = {
     fontSize: "17px",
     fontWeight: "700",
     cursor: "pointer",
-    touchAction: "manipulation",
   },
 
   secondary: {
@@ -145,7 +158,6 @@ const styles = {
     fontSize: "17px",
     fontWeight: "700",
     cursor: "pointer",
-    touchAction: "manipulation",
   },
 
   note: {
@@ -194,7 +206,6 @@ const styles = {
 
   phoneText: {
     color: "#ccc",
-    lineHeight: "1.5",
     marginBottom: "18px",
   },
 
@@ -203,6 +214,6 @@ const styles = {
     padding: "14px",
     borderRadius: "14px",
     marginTop: "10px",
-    fontSize: "15px",
+    fontSize: "14px",
   },
 };
