@@ -1,24 +1,21 @@
 import { useNavigate } from "react-router-dom";
-
-const QRVisual = () => (
-  <div style={styles.qrVisual}>
-    {[...Array(9)].map((_, i) => (
-      <div
-        key={i}
-        style={{
-          ...styles.qrCell,
-          background: i % 2 === 0 ? "#f5c542" : "transparent",
-        }}
-      />
-    ))}
-  </div>
-);
+import { useEffect, useState } from "react";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [active, setActive] = useState(0);
+
+  // simple animation loop
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActive((prev) => (prev + 1) % 9);
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div style={styles.container}>
+      {/* HEADER */}
       <div style={styles.header}>
         <div style={styles.logo}>QRS</div>
 
@@ -27,7 +24,9 @@ export default function LandingPage() {
         </button>
       </div>
 
+      {/* HERO */}
       <div style={styles.hero}>
+        {/* LEFT */}
         <div style={styles.left}>
           <div style={styles.badge}>QR MANAGEMENT PLATFORM</div>
 
@@ -36,8 +35,8 @@ export default function LandingPage() {
           </h1>
 
           <p style={styles.subtitle}>
-            QR codes for your restaurant, business, event, or anything.
-            If it exists, we can put a square on it.
+            QR codes for your restaurant, business, event, or anything. If it
+            exists, we can put a square on it.
           </p>
 
           <div style={styles.ctaRow}>
@@ -57,8 +56,26 @@ export default function LandingPage() {
           </div>
         </div>
 
+        {/* RIGHT (ANIMATED QR) */}
         <div style={styles.right}>
-          <QRVisual />
+          <div style={styles.qrVisual}>
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  ...styles.qrCell,
+                  background:
+                    i === active
+                      ? "#f5c542"
+                      : i % 2 === 0
+                      ? "#f5c54233"
+                      : "transparent",
+                  transform: i === active ? "scale(1.2)" : "scale(1)",
+                  transition: "all 0.3s ease",
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
