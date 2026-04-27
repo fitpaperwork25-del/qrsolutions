@@ -5,22 +5,27 @@ export default function LandingPage() {
 
   return (
     <div style={styles.page}>
-      {/* HEADER */}
-      <div style={styles.header}>
-        <div style={styles.logo}>QRS</div>
+      <header style={styles.header}>
+        <div style={styles.brand}>
+          <div style={styles.qLogo}>Q</div>
+          <span>RS</span>
+        </div>
+
         <button style={styles.login} onClick={() => navigate("/login")}>
           Log In
         </button>
-      </div>
+      </header>
 
-      {/* HERO */}
-      <div style={styles.hero}>
-        {/* LEFT */}
-        <div style={styles.left}>
+      <main style={styles.hero}>
+        <section style={styles.left}>
           <div style={styles.badge}>QR MANAGEMENT PLATFORM</div>
 
           <h1 style={styles.title}>
-            We <span style={styles.gold}>Square</span> You.
+            We
+            <br />
+            <span>Square</span>
+            <br />
+            You.
           </h1>
 
           <p style={styles.subtitle}>
@@ -31,7 +36,7 @@ export default function LandingPage() {
           <div style={styles.buttons}>
             <button
               style={styles.primary}
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/register?plan=free")}
             >
               Start Free
             </button>
@@ -43,33 +48,41 @@ export default function LandingPage() {
               $19/mo Plan
             </button>
           </div>
-        </div>
 
-        {/* RIGHT VISUAL */}
-        <div style={styles.right}>
-          <div style={styles.visual}>
-            {[0, 1, 2].map((row) => (
-              <div key={row} style={styles.row}>
-                {[0, 1, 2].map((col) => {
-                  const index = row * 3 + col;
-
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        ...styles.block,
-                        ...(index % 2 === 0
-                          ? styles.blockGold
-                          : styles.blockOutline),
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            ))}
+          <div style={styles.features}>
+            <span>⚡ Fast Setup</span>
+            <span>▌</span>
+            <span>◇ Secure & Reliable</span>
+            <span>▌</span>
+            <span>▥ Built for Business</span>
           </div>
-        </div>
-      </div>
+        </section>
+
+        <section style={styles.right}>
+          <div style={styles.scanFrame}>
+            <div style={styles.cornerTL}></div>
+            <div style={styles.cornerTR}></div>
+            <div style={styles.cornerBL}></div>
+            <div style={styles.cornerBR}></div>
+
+            <div style={styles.bigQ}>Q</div>
+
+            <div style={styles.grid}>
+              {Array.from({ length: 52 }).map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    ...styles.square,
+                    ...(i % 3 === 0 ? styles.filled : {}),
+                    ...(i % 5 === 0 ? styles.large : {}),
+                    ...(i % 7 === 0 ? styles.outline : {}),
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
@@ -79,84 +92,102 @@ const gold = "#f5c542";
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "#000",
+    background:
+      "radial-gradient(circle at 75% 45%, rgba(245,197,66,0.12), transparent 35%), #030303",
     color: "#fff",
-    padding: "40px 60px",
     fontFamily: "Arial, sans-serif",
+    padding: "36px 54px",
+    boxSizing: "border-box",
+    overflow: "hidden",
   },
 
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "60px",
   },
 
-  logo: {
-    fontSize: "26px",
-    fontWeight: "bold",
+  brand: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    fontSize: "34px",
+    fontWeight: "900",
     letterSpacing: "2px",
+  },
+
+  qLogo: {
+    width: "44px",
+    height: "44px",
+    border: `5px solid ${gold}`,
+    color: gold,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "900",
+    lineHeight: 1,
   },
 
   login: {
     background: "transparent",
     border: `1px solid ${gold}`,
     color: gold,
-    padding: "10px 20px",
-    cursor: "pointer",
+    padding: "12px 28px",
+    fontSize: "16px",
     fontWeight: "bold",
+    cursor: "pointer",
   },
 
   hero: {
+    minHeight: "calc(100vh - 90px)",
     display: "grid",
-    gridTemplateColumns: "1.2fr 0.8fr",
+    gridTemplateColumns: "1fr 1fr",
     alignItems: "center",
     gap: "60px",
   },
 
   left: {
-    maxWidth: "650px",
+    maxWidth: "660px",
   },
 
   badge: {
-    background: gold,
-    color: "#000",
-    display: "inline-block",
-    padding: "6px 14px",
-    fontSize: "12px",
-    letterSpacing: "3px",
-    marginBottom: "24px",
+    color: gold,
+    fontSize: "15px",
+    letterSpacing: "4px",
     fontWeight: "bold",
+    marginBottom: "34px",
   },
 
   title: {
-    fontSize: "72px",
-    lineHeight: "1.05",
-    marginBottom: "20px",
+    fontSize: "clamp(64px, 8vw, 112px)",
+    lineHeight: "0.95",
+    margin: "0 0 28px",
     fontWeight: "900",
+    letterSpacing: "-4px",
   },
 
-  gold: {
-    color: gold,
-  },
+  titleSpan: {},
 
   subtitle: {
-    color: "#bbb",
-    fontSize: "20px",
+    color: "#d0d0d0",
+    fontSize: "22px",
     lineHeight: "1.5",
-    marginBottom: "30px",
+    maxWidth: "620px",
+    marginBottom: "36px",
   },
 
   buttons: {
     display: "flex",
-    gap: "14px",
+    gap: "18px",
+    marginBottom: "56px",
   },
 
   primary: {
     background: gold,
     color: "#000",
-    padding: "14px 26px",
     border: "none",
+    padding: "18px 42px",
+    fontSize: "18px",
     fontWeight: "bold",
     cursor: "pointer",
   },
@@ -164,41 +195,117 @@ const styles = {
   secondary: {
     background: "transparent",
     color: gold,
-    padding: "14px 26px",
-    border: `1px solid ${gold}`,
+    border: `2px solid ${gold}`,
+    padding: "16px 42px",
+    fontSize: "18px",
     fontWeight: "bold",
     cursor: "pointer",
+  },
+
+  features: {
+    display: "flex",
+    gap: "18px",
+    color: "#ddd",
+    fontSize: "16px",
+    alignItems: "center",
   },
 
   right: {
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
   },
 
-  visual: {
-    border: `2px solid ${gold}`,
-    padding: "20px",
+  scanFrame: {
+    position: "relative",
+    width: "560px",
+    height: "560px",
     display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-    boxShadow: "0 0 40px rgba(245,197,66,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  row: {
-    display: "flex",
-    gap: "14px",
-  },
-
-  block: {
+  cornerTL: {
+    position: "absolute",
+    top: 0,
+    left: 0,
     width: "70px",
     height: "70px",
+    borderTop: `5px solid ${gold}`,
+    borderLeft: `5px solid ${gold}`,
   },
 
-  blockGold: {
-    background: gold,
+  cornerTR: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: "70px",
+    height: "70px",
+    borderTop: `5px solid ${gold}`,
+    borderRight: `5px solid ${gold}`,
   },
 
-  blockOutline: {
+  cornerBL: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "70px",
+    height: "70px",
+    borderBottom: `5px solid ${gold}`,
+    borderLeft: `5px solid ${gold}`,
+  },
+
+  cornerBR: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: "70px",
+    height: "70px",
+    borderBottom: `5px solid ${gold}`,
+    borderRight: `5px solid ${gold}`,
+  },
+
+  bigQ: {
+    position: "absolute",
+    top: "50px",
+    left: "60px",
+    width: "150px",
+    height: "150px",
+    border: `18px solid ${gold}`,
+    color: gold,
+    fontSize: "96px",
+    fontWeight: "900",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 0 40px rgba(245,197,66,0.25)",
+  },
+
+  grid: {
+    marginTop: "100px",
+    display: "grid",
+    gridTemplateColumns: "repeat(8, 42px)",
+    gap: "14px",
+  },
+
+  square: {
+    width: "28px",
+    height: "28px",
     border: `2px solid ${gold}`,
+    opacity: 0.9,
+  },
+
+  filled: {
+    background: gold,
+    boxShadow: "0 0 18px rgba(245,197,66,0.25)",
+  },
+
+  large: {
+    width: "44px",
+    height: "44px",
+  },
+
+  outline: {
+    background: "transparent",
   },
 };
