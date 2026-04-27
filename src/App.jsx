@@ -10,7 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LandingPage from "./pages/LandingPage";
 
 import { useAuth } from "./lib/useAuth";
-
+import SuccessPage from "./pages/SuccessPage";
 export default function App() {
   const { session, loading } = useAuth();
 
@@ -23,7 +23,7 @@ export default function App() {
       <Route path="/scan" element={<ScanPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-
+<Route path="/success" element={<SuccessPage />} />
       {/* Protected */}
       <Route
         path="/dashboard"
