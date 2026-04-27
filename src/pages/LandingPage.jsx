@@ -18,7 +18,6 @@ export default function LandingPage() {
       </header>
 
       <main style={styles.hero}>
-        {/* LEFT */}
         <section style={styles.left}>
           <div style={styles.badge}>QR Solutions</div>
 
@@ -50,7 +49,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* RIGHT (REAL QR) */}
         <section style={styles.right}>
           <QRCodeBox />
         </section>
@@ -63,27 +61,29 @@ const gold = "#f5c542";
 
 const styles = {
   page: {
-    height: "100vh",
+    minHeight: "100vh",
     background:
       "radial-gradient(circle at 75% 45%, rgba(245,197,66,0.14), transparent 32%), #030303",
     color: "#fff",
     fontFamily: "Arial, sans-serif",
-    padding: "28px 54px",
+    padding: "24px",
     boxSizing: "border-box",
+    overflowX: "hidden",
   },
 
   header: {
-    height: "64px",
+    minHeight: "64px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: "16px",
   },
 
   brand: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    fontSize: "32px",
+    fontSize: "28px",
     fontWeight: "900",
   },
 
@@ -102,17 +102,18 @@ const styles = {
     background: "transparent",
     border: `1px solid ${gold}`,
     color: gold,
-    padding: "10px 24px",
+    padding: "10px 22px",
     fontWeight: "bold",
     cursor: "pointer",
   },
 
   hero: {
-    height: "calc(100vh - 92px)",
+    minHeight: "calc(100vh - 120px)",
     display: "grid",
-    gridTemplateColumns: "1fr 0.9fr",
+    gridTemplateColumns: "1fr",
     alignItems: "center",
-    gap: "36px",
+    gap: "40px",
+    paddingTop: "28px",
   },
 
   left: {
@@ -121,13 +122,13 @@ const styles = {
 
   badge: {
     color: gold,
-    fontSize: "18px",
+    fontSize: "17px",
     fontWeight: "bold",
-    marginBottom: "24px",
+    marginBottom: "22px",
   },
 
   title: {
-    fontSize: "clamp(58px, 7vw, 92px)",
+    fontSize: "clamp(42px, 12vw, 82px)",
     lineHeight: "0.95",
     margin: "0 0 24px",
     fontWeight: "900",
@@ -139,22 +140,23 @@ const styles = {
 
   subtitle: {
     color: "#d2d2d2",
-    fontSize: "20px",
+    fontSize: "clamp(17px, 4vw, 20px)",
     lineHeight: "1.45",
     marginBottom: "30px",
   },
 
   buttons: {
     display: "flex",
-    gap: "18px",
+    gap: "14px",
+    flexWrap: "wrap",
   },
 
   primary: {
     background: gold,
     color: "#000",
     border: "none",
-    padding: "16px 38px",
-    fontSize: "17px",
+    padding: "15px 32px",
+    fontSize: "16px",
     fontWeight: "bold",
     cursor: "pointer",
   },
@@ -163,8 +165,8 @@ const styles = {
     background: "transparent",
     color: gold,
     border: `2px solid ${gold}`,
-    padding: "14px 38px",
-    fontSize: "17px",
+    padding: "13px 32px",
+    fontSize: "16px",
     fontWeight: "bold",
     cursor: "pointer",
   },
@@ -173,5 +175,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+    paddingBottom: "30px",
   },
 };
