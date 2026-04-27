@@ -1,5 +1,19 @@
 import { useNavigate } from "react-router-dom";
 
+const QRVisual = () => (
+  <div style={styles.qrVisual}>
+    {[...Array(9)].map((_, i) => (
+      <div
+        key={i}
+        style={{
+          ...styles.qrCell,
+          background: i % 2 === 0 ? "#f5c542" : "transparent",
+        }}
+      />
+    ))}
+  </div>
+);
+
 export default function LandingPage() {
   const navigate = useNavigate();
 
@@ -44,7 +58,7 @@ export default function LandingPage() {
         </div>
 
         <div style={styles.right}>
-          <div style={styles.qrBox}></div>
+          <QRVisual />
         </div>
       </div>
     </div>
@@ -141,11 +155,18 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    minWidth: "280px",
   },
 
-  qrBox: {
-    width: "200px",
-    height: "200px",
+  qrVisual: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 60px)",
+    gap: "12px",
+  },
+
+  qrCell: {
+    width: "60px",
+    height: "60px",
     border: "3px solid #f5c542",
   },
 };
