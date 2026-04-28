@@ -31,8 +31,8 @@ Deno.serve(async (req) => {
 
     await supabase
       .from("businesses")
-      .update({ subscription_status: "active" })
-      .eq("user_id", userId);
+      .update({ status: "active" })
+      .eq("id", userId);
   }
 
   return new Response(JSON.stringify({ received: true }), { status: 200 });
