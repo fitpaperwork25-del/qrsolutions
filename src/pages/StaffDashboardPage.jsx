@@ -8,7 +8,9 @@ export default function StaffDashboardPage() {
 
   const updateStatus = (id, newStatus) => {
     setOrders((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
+      prev.map((o) =>
+        o.id === id ? { ...o, status: newStatus } : o
+      )
     );
   };
 
@@ -18,23 +20,34 @@ export default function StaffDashboardPage() {
 
       {orders.map((order) => (
         <div key={order.id} style={styles.card}>
+          
+          {/* LEFT SIDE */}
           <div>
-            <strong>{order.item}</strong>
-            <p>{order.table}</p>
+            <h3 style={styles.item}>{order.item}</h3>
+            <p style={styles.table}>{order.table}</p>
           </div>
 
-          <div>
+          {/* RIGHT SIDE */}
+          <div style={styles.right}>
             <span style={styles.status}>{order.status}</span>
 
             <div style={styles.actions}>
-              <button onClick={() => updateStatus(order.id, "Ready")}>
+              <button
+                style={styles.btn}
+                onClick={() => updateStatus(order.id, "Ready")}
+              >
                 Ready
               </button>
-              <button onClick={() => updateStatus(order.id, "Served")}>
+
+              <button
+                style={styles.btn}
+                onClick={() => updateStatus(order.id, "Served")}
+              >
                 Served
               </button>
             </div>
           </div>
+
         </div>
       ))}
     </div>
@@ -43,30 +56,60 @@ export default function StaffDashboardPage() {
 
 const styles = {
   page: {
-    padding: 20,
+    padding: 30,
     background: "#080808",
     color: "#fff",
     minHeight: "100vh",
   },
+
   title: {
     color: "#E8C547",
+    marginBottom: 20,
   },
+
   card: {
     display: "flex",
     justifyContent: "space-between",
-    padding: 16,
+    alignItems: "center",
+    padding: 20,
     border: "1px solid #222",
-    borderRadius: 10,
-    marginBottom: 12,
+    borderRadius: 12,
+    marginBottom: 16,
     background: "#111",
   },
+
+  item: {
+    margin: 0,
+  },
+
+  table: {
+    margin: "4px 0 0 0",
+    color: "#aaa",
+  },
+
+  right: {
+    textAlign: "right",
+  },
+
   status: {
     color: "#E8C547",
     fontWeight: "bold",
+    display: "block",
+    marginBottom: 8,
   },
+
   actions: {
-    marginTop: 8,
     display: "flex",
-    gap: 8,
+    gap: 10,
+    justifyContent: "flex-end",
+  },
+
+  btn: {
+    background: "#222",
+    color: "#fff",
+    border: "1px solid #444",
+    padding: "6px 12px",
+    cursor: "pointer",
+    borderRadius: 6,
   },
 };
