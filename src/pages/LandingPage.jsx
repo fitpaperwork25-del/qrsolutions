@@ -216,7 +216,7 @@ export default function LandingPage() {
           <p style={{ color: "#444", fontSize: 13, fontFamily: "'Space Mono', monospace" }}>© 2026 QRSolutions. We square you.</p>
           <div style={{ display: "flex", gap: 24 }}>
             <button onClick={() => navigate("/register")} style={{ background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer", fontFamily: "'Space Mono', monospace" }}>Register</button>
-            <button onClick={() => navigate("/"/login"")} style={{ background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer", fontFamily: "'Space Mono', monospace" }}>Login</button>
+            <button onClick={() => navigate("/login")} style={{ background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer", fontFamily: "'Space Mono', monospace" }}>Login</button>
           </div>
         </div>
       </footer>
