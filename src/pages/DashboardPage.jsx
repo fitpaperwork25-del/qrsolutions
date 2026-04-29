@@ -145,6 +145,8 @@ function MenuTab({ bizId, showToast }) {
   const [showAdd, setShowAdd] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [form, setForm] = useState({ name: "", description: "", price: "", category: "" });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -157,17 +159,29 @@ function MenuTab({ bizId, showToast }) {
 
   useEffect(() => { load(); }, [load]);
 
-  const resetForm = () => setForm({ name: "", description: "", price: "", category: "" });
+  const resetForm = () => { setForm({ name: "", description: "", price: "", category: "" }); setImageFile(null); setImagePreview(null); };
 
   const openEdit = (item) => {
     setEditItem(item);
     setForm({ name: item.name, description: item.description || "", price: String(item.price), category: item.category || "" });
+    setImageFile(null);
+    setImagePreview(item.image_url || null);
   };
 
   const handleSave = async () => {
     if (!form.name.trim() || !form.price) return;
     setSaving(true);
-    const payload = { name: form.name.trim(), description: form.description.trim(), price: Number(form.price), category: form.category.trim() || null, business_id: bizId };
+    let image_url = editItem?.image_url || null;
+    if (imageFile) {
+      const ext = imageFile.name.split(".").pop();
+      const path = `services/${bizId}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("service-images").upload(path, imageFile, { upsert: true });
+      if (!upErr) {
+        const { data } = supabase.storage.from("service-images").getPublicUrl(path);
+        image_url = data.publicUrl;
+      }
+    }
+    const payload = { name: form.name.trim(), description: form.description.trim(), price: Number(form.price), category: form.category.trim() || null, business_id: bizId, image_url };
     if (editItem) {
       await supabase.from("services").update(payload).eq("id", editItem.id);
       showToast(`"${form.name}" updated`);
@@ -203,6 +217,18 @@ function MenuTab({ bizId, showToast }) {
   const FormContent = (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div>
+        <div style={{ fontSize: 10, color: MUTED, letterSpacing: 1.5, fontFamily: "monospace", marginBottom: 6 }}>ITEM IMAGE</div>
+        <div onClick={() => document.getElementById("menu-img-upload").click()}
+          style={{ position: "relative", width: "100%", height: 150, borderRadius: 10, overflow: "hidden", border: `1px dashed ${BORDER}`, background: "#141414", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {imagePreview ? (
+            <img src={imagePreview} alt="preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ fontSize: 12, color: MUTED, fontFamily: "monospace" }}>CLICK TO UPLOAD</span>
+          )}
+        </div>
+        <input id="menu-img-upload" type="file" accept="image/*" style={{ display: "none" }}
+          onChange={e => { const f = e.target.files[0]; if (f) { setImageFile(f); setImagePreview(URL.createObjectURL(f)); } }} />
+      </div>
         <div style={{ fontSize: 10, color: MUTED, letterSpacing: 1.5, fontFamily: "monospace", marginBottom: 6 }}>NAME *</div>
         <input style={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Tonkotsu Ramen" />
       </div>
@@ -272,8 +298,9 @@ function MenuTab({ bizId, showToast }) {
             {cat && <div style={{ fontSize: 10, color: MUTED, fontFamily: "monospace", letterSpacing: 2, marginBottom: 10 }}>{cat.toUpperCase()}</div>}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
               {items.map(item => (
-                <div key={item.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "14px 16px", opacity: item.available ? 1 : 0.5 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div key={item.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden", opacity: item.available ? 1 : 0.5 }}>
+                  {item.image_url && <img src={item.image_url} alt={item.name} style={{ width: "100%", height: 130, objectFit: "cover", display: "block" }} />}
+                  <div style={{ padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{item.name}
                         {!item.available && <span style={{ fontSize: 10, fontFamily: "monospace", background: "rgba(255,255,255,0.07)", padding: "2px 7px", borderRadius: 4, marginLeft: 8 }}>HIDDEN</span>}
@@ -560,12 +587,8 @@ export default function DashboardPage() {
   // Fetch business by logged-in email
   useEffect(() => {
     if (!session?.user?.email) return;
-    console.log("fetching for:", session.user.email);
-    supabase.from("businesses").select("*").eq("email", session.user.email)
-   .then(({ data, error }) => {
-      console.log("biz fetch:", data, error);
-      if (data && data.length > 0) setBiz(data[0]);
-    });
+    supabase.from("businesses").select("*").eq("email", session.user.email).single()
+      .then(({ data }) => { if (data) setBiz(data); });
   }, [session]);
 
   // Fetch overview data
