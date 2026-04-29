@@ -87,7 +87,7 @@ function OverviewTab({ biz, orders, services, locations }) {
       {/* Business Info */}
       <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 11, color: MUTED, letterSpacing: 2, marginBottom: 12, fontFamily: "monospace" }}>BUSINESS INFO</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
           {[
             { label: "Name", val: biz?.name || "—" },
             { label: "Email", val: biz?.email || "—" },
