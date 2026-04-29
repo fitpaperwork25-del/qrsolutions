@@ -229,6 +229,7 @@ function MenuTab({ bizId, showToast }) {
         <input id="menu-img-upload" type="file" accept="image/*" style={{ display: "none" }}
           onChange={e => { const f = e.target.files[0]; if (f) { setImageFile(f); setImagePreview(URL.createObjectURL(f)); } }} />
       </div>
+      <div>
         <div style={{ fontSize: 10, color: MUTED, letterSpacing: 1.5, fontFamily: "monospace", marginBottom: 6 }}>NAME *</div>
         <input style={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Tonkotsu Ramen" />
       </div>
