@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       "line_items[0][quantity]": "1",
       "metadata[userId]": userId,
       "metadata[plan]": plan,
-      "success_url": "https://qrsolutions-phi.vercel.app/staff/dashboard",
+      "success_url": `https://qrsolutions-phi.vercel.app/success?plan=${plan}`,
       "cancel_url": "https://qrsolutions-phi.vercel.app/register",
     }),
   });
