@@ -588,8 +588,8 @@ export default function DashboardPage() {
   // Fetch business by logged-in email
   useEffect(() => {
     if (!session?.user?.email) return;
-    supabase.from("businesses").select("*").eq("email", session.user.email).single()
-      .then(({ data }) => { if (data) setBiz(data); });
+    supabase.from("businesses").select("*").filter("email", "eq", session.user.email)
+      .then(({ data }) => { if (data && data.length > 0) setBiz(data[0]); });
   }, [session]);
 
   // Fetch overview data
