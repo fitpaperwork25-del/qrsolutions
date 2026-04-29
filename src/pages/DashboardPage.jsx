@@ -560,6 +560,7 @@ export default function DashboardPage() {
   // Fetch business by logged-in email
   useEffect(() => {
     if (!session?.user?.email) return;
+    console.log("fetching for:", session.user.email);
    .then(({ data, error }) => {
       console.log("biz fetch:", data, error);
       if (data && data.length > 0) setBiz(data[0]);
