@@ -1,0 +1,173 @@
+=====================================
+QRSolutions — PROGRESS NOTE
+Date: April 28, 2026
+Status: ON HOLD (intentional pause)
+=====================================
+
+PROJECT SUMMARY
+---------------
+QRSolutions is a QR code management SaaS platform for restaurants,
+barbershops, cafés, and service businesses. Tagline: "We Square You."
+Customers pay a monthly subscription to generate QR codes that power
+digital menus, table bookings, customer ordering, and staff dashboards.
+
+Live URL:   https://qrsolutions-phi.vercel.app
+Local path: C:\Users\Michael Etbarekh\Desktop\earagent\QRSolutions\qrs
+GitHub:     https://github.com/fitpaperwork25-del/qrsolutions
+Supabase:   fndxdstclhjwjhijszky
+
+
+TECH STACK
+----------
+Frontend:   React + Vite → deployed on Vercel
+Backend:    Supabase (PostgreSQL + Edge Functions + Auth)
+Payments:   Stripe (sandbox mode)
+Email:      Resend
+CLI Tool:   C:\Users\Michael Etbarekh\Desktop\supabase.exe
+
+
+CREDENTIALS
+-----------
+Staff login:     fitpaperwork25@gmail.com / Admin1234!
+Stripe account:  QRSolutions sandbox
+Supabase CLI deploy command:
+  & "C:\Users\Michael Etbarekh\Desktop\supabase.exe" functions deploy
+    [function-name] --project-ref fndxdstclhjwjhijszky --no-verify-jwt
+
+Push to Vercel:
+  git add . && git commit -m "message" && git push
+
+
+STRIPE PRICE IDs (SANDBOX)
+---------------------------
+Starter    → price_1TQrWpEN4F1rX9xX6qbDm6LK  ($19/mo)
+Pro        → price_1TQrZQEN4F1rX9xXscNP0YMN  ($49/mo)
+Enterprise → price_1TQraVEN4F1rX9xX31kBW3ez  ($99/mo)
+
+
+WHAT WAS BUILT (COMPLETED)
+---------------------------
+
+1. LANDING PAGE (src/pages/LandingPage.jsx)
+   - Dark theme (#080808 background, #E8C547 gold accents)
+   - Fonts: Syne + Space Mono
+   - Sections: Nav, Hero, Marquee ticker, How It Works (4 steps),
+     Pricing (3 tiers), CTA Banner, Footer
+   - Mobile responsive: hero QR icon hidden, buttons full-width,
+     nav compact on screens under 768px
+   - Each pricing button routes to /register?plan=starter/pro/enterprise
+
+2. REGISTER PAGE (src/pages/RegisterPage.jsx)
+   - Reads ?plan= from URL using useSearchParams
+   - Displays selected plan + price at top of form
+   - 2-step form: Step 1 (business name + type) → Step 2 (email + password)
+   - Creates Supabase auth user on submit
+   - Inserts row into businesses table with plan and status=pending
+   - Calls create-checkout-session edge function
+   - Redirects customer to Stripe hosted checkout
+
+3. STRIPE CHECKOUT
+   - Subscription mode (recurring monthly)
+   - Correct price ID loaded per plan selected
+   - Success URL: https://qrsolutions-phi.vercel.app/staff/dashboard
+   - Cancel URL: https://qrsolutions-phi.vercel.app/register
+   - Tested: Stripe checkout shows correct plan and price
+
+4. SUPABASE EDGE FUNCTIONS (all deployed)
+   - create-checkout-session: maps plan → Stripe price ID, creates session
+   - stripe-webhook: activates account after payment (see blocker below)
+   - send-booking-email: sends booking confirmation emails
+
+5. STRIPE WEBHOOK
+   - Name: playful-breeze
+   - Endpoint: https://fndxdstclhjwjhijszky.supabase.co/functions/v1/stripe-webhook
+   - Event: checkout.session.completed
+   - Status: Active, delivering HTTP 200 OK
+   - Deployed with --no-verify-jwt flag (required for Stripe to call Supabase)
+
+6. SUPABASE SECRETS (all configured)
+   - STRIPE_SECRET_KEY ✅
+   - STRIPE_WEBHOOK_SECRET ✅
+   - SUPABASE_URL ✅
+   - SUPABASE_SERVICE_ROLE_KEY ✅
+   - RESEND_API_KEY ✅
+
+7. BUSINESSES TABLE (relevant columns)
+   - id (uuid) — Supabase auth user ID
+   - name (text)
+   - type (text)
+   - email (text)
+   - status (text) — pending / active
+   - plan (text) — starter / pro / enterprise
+
+
+CURRENT BLOCKER (where we stopped)
+------------------------------------
+ISSUE: Webhook fires 200 OK but businesses table status never
+       updates from "pending" to "active"
+
+ROOT CAUSE IDENTIFIED:
+The Stripe event carries:
+  customer_email = fitpaperwork25@gmail.com
+  metadata.userId = dd3eb013-81f1-4ae7-ac05-279f015f5ad6
+
+But the test row in the businesses table has:
+  email = etbarekh@me.com
+  id = a57df375-95be-4273-859c-1e82b3737573
+
+They don't match — so the update runs successfully but hits zero rows.
+
+WEBHOOK CODE IS CORRECT. Data mismatch is the only problem.
+
+THE FIX (one step, takes 2 minutes):
+  1. Supabase → Table Editor → businesses table
+  2. Find row with email = etbarekh@me.com
+  3. Edit email → change to fitpaperwork25@gmail.com
+  4. Save
+  5. Stripe → Webhooks → playful-breeze → Event deliveries → Resend
+  6. Supabase → businesses → confirm status = active
+
+This is a test data issue. In production, real customers register
+and pay with the same email, so this mismatch will not occur.
+
+
+WHAT COMES NEXT (after blocker is fixed)
+-----------------------------------------
+1. Confirmation email — send welcome email via Resend after payment
+2. Success/onboarding page — replace landing page redirect with a
+   proper "You're in — here's what's next" page
+3. Full end-to-end test — register → pay → email → login → dashboard
+4. Switch Stripe from sandbox to live when ready to launch
+
+
+STRATEGIC NOTE (April 28, 2026)
+---------------------------------
+Project is technically sound. Deliberately paused to think through
+market positioning before building more features.
+
+Key question to answer before resuming:
+  Who are the first 10 paying customers and why would they choose
+  this over free alternatives like QR Tiger or Square?
+
+Potential differentiator to explore:
+  Targeting East African restaurant and service business owners in
+  the US (Michael's direct network) with multilingual support and
+  bundled with MERBEBNA paperwork services as an all-in-one
+  business setup package.
+
+Resume when market positioning is clearer.
+
+
+KEY LINKS
+---------
+Supabase dashboard:  https://supabase.com/dashboard/project/fndxdstclhjwjhijszky
+Supabase tables:     https://supabase.com/dashboard/project/fndxdstclhjwjhijszky/editor/17545
+Supabase functions:  https://supabase.com/dashboard/project/fndxdstclhjwjhijszky/functions
+Supabase secrets:    https://supabase.com/dashboard/project/fndxdstclhjwjhijszky/functions/secrets
+Stripe dashboard:    https://dashboard.stripe.com/acct_1TQJGfEN4F1rX9xX/test/dashboard
+Stripe webhooks:     https://dashboard.stripe.com/acct_1TQJGfEN4F1rX9xX/test/webhooks
+Vercel deployment:   https://vercel.com (project: qrsolutions-phi)
+
+=====================================
+END OF PROGRESS NOTE
+=====================================
