@@ -1,5 +1,5 @@
-console.log("OrdersTab mounted");
 function OrdersTab({ bizId }) {
+  console.log("OrdersTab RENDERED");
 console.log("OrdersTab loaded, bizId:", bizId);
 const [orders, setOrders] = useState([]);
 
@@ -18,9 +18,7 @@ const [orders, setOrders] = useState([]);
       setOrders(data || []);
     };
     load();
-
-  
-  }, [bizId]);
+}, [bizId]);
 
   return (
     <div>
