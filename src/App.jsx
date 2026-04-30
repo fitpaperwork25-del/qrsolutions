@@ -26,7 +26,7 @@ export default function App() {
 
       {/* PUBLIC */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/scan" element={<ScanPage />} />
+      <Route path="/scan/:bizId/:locSlug" element={<ScanPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/success" element={<SuccessPage />} />
