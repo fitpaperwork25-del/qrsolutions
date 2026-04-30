@@ -179,7 +179,24 @@ function OrdersTab({ bizId }) {
   const [orders, setOrders] = useState([]);
 
   const load = async () => {
-    const { data } = await supabase.from("orders").select("*, locations(label)").eq("business_id", bizId).order("created_at", { ascending: false });
+    const { data: locs } = await supabase
+      .from("locations")
+      .select("id")
+      .eq("business_id", bizId);
+
+    const locationIds = (locs || []).map(l => l.id);
+
+    if (locationIds.length === 0) {
+      setOrders([]);
+      return;
+    }
+
+    const { data } = await supabase
+      .from("orders")
+      .select("*, locations(label)")
+      .in("location_id", locationIds)
+      .order("created_at", { ascending: false });
+
     setOrders(data || []);
   };
 
@@ -196,7 +213,14 @@ function OrdersTab({ bizId }) {
                 <span style={{ color: ACCENT }}>${parseFloat(order.total || 0).toFixed(2)}</span>
               </div>
               <div style={{ fontSize: 12, color: MUTED }}>{new Date(order.created_at).toLocaleString()}</div>
-              <div style={{ fontSize: 12, marginTop: 6, color: order.status === "completed" ? "#4CAF50" : TEXT }}>{order.status}</div>
+              <div style={{ fontSize: 12, marginTop: 6, color: order.status === "done" ? "#4CAF50" : TEXT }}>{order.status}</div>
+              {order.items && (
+                <div style={{ marginTop: 8, fontSize: 12, color: MUTED }}>
+                  {order.items.map((item, i) => (
+                    <div key={i}>{item.qty}× {item.name} — ${(item.price * item.qty).toFixed(2)}</div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
