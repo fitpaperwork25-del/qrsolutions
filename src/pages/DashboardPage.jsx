@@ -1,3 +1,4 @@
+console.log("OrdersTab mounted");
 function OrdersTab({ bizId }) {
 console.log("OrdersTab loaded, bizId:", bizId);
 const [orders, setOrders] = useState([]);
