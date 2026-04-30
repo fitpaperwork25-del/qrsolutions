@@ -1,5 +1,6 @@
-function OrdersTab({ bizId }) {
-  const [orders, setOrders] = useState([]);
+1 function OrdersTab({ bizId }) {
+2   console.log("OrdersTab loaded, bizId:", bizId);
+3   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     if (!bizId) return;
@@ -15,8 +16,9 @@ function OrdersTab({ bizId }) {
 
       setOrders(data || []);
     };
-load();
     load();
+
+  
   }, [bizId]);
 
   return (
