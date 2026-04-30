@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/useAuth";
 
@@ -22,17 +23,11 @@ const inputStyle = {
   padding: "10px", color: TEXT, boxSizing: "border-box",
 };
 
-/* ── OVERVIEW TAB ── */
 function OverviewTab({ biz }) {
   if (!biz) return <div style={{ color: MUTED }}>Loading...</div>;
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 16 }}>
-      {[
-        ["Business Name", biz.name],
-        ["Email", biz.email],
-        ["Plan", biz.plan || "Free"],
-        ["Status", biz.active ? "Active" : "Inactive"],
-      ].map(([label, value]) => (
+      {[["Business Name", biz.name], ["Email", biz.email], ["Plan", biz.plan || "Free"], ["Status", biz.active ? "Active" : "Inactive"]].map(([label, value]) => (
         <div key={label} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 20 }}>
           <div style={{ color: MUTED, fontSize: 12, marginBottom: 6 }}>{label}</div>
           <div style={{ fontWeight: 700 }}>{value || "—"}</div>
@@ -42,7 +37,6 @@ function OverviewTab({ biz }) {
   );
 }
 
-/* ── TABLES TAB ── */
 function TablesTab({ bizId }) {
   const [locations, setLocations] = useState([]);
   const [newLabel, setNewLabel] = useState("");
@@ -67,22 +61,39 @@ function TablesTab({ bizId }) {
     load();
   };
 
+  const downloadQR = (slug) => {
+    const canvas = document.getElementById(`qr-${slug}`);
+    const url = canvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `qr-${slug}.png`;
+    a.click();
+  };
+
   return (
     <div>
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
         <input style={inputStyle} value={newLabel} onChange={e => setNewLabel(e.target.value)} placeholder="Table name..." />
         <button onClick={addLocation} style={btn({ background: ACCENT, color: BG, padding: "10px 20px", whiteSpace: "nowrap" })}>Add</button>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 12 }}>
         {locations.map(loc => {
           const scanUrl = `${window.location.origin}/scan/${bizId}/${loc.slug}`;
           return (
-            <div key={loc.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <a href={scanUrl} target="_blank" style={{ color: ACCENT, fontWeight: 700, textDecoration: "none" }}>{loc.label}</a>
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{loc.slug}</div>
+            <div key={loc.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontWeight: 700, color: ACCENT }}>{loc.label}</div>
+                  <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{loc.slug}</div>
+                </div>
+                <button onClick={() => deleteLocation(loc.id)} style={btn({ background: "#1a1a1a", color: "red", width: 32, height: 32 })}>🗑</button>
               </div>
-              <button onClick={() => deleteLocation(loc.id)} style={btn({ background: "#1a1a1a", color: "red", width: 32, height: 32 })}>🗑</button>
+              <div style={{ display: "flex", justifyContent: "center", background: "white", borderRadius: 8, padding: 12, marginBottom: 10 }}>
+                <QRCodeCanvas id={`qr-${loc.slug}`} value={scanUrl} size={150} />
+              </div>
+              <button onClick={() => downloadQR(loc.slug)} style={btn({ background: ACCENT, color: BG, padding: "8px 16px", width: "100%" })}>
+                ⬇ Download QR
+              </button>
             </div>
           );
         })}
@@ -91,7 +102,6 @@ function TablesTab({ bizId }) {
   );
 }
 
-/* ── MENU TAB ── */
 function MenuTab({ bizId }) {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState({ name: "", price: "", description: "", image_url: "" });
@@ -103,7 +113,6 @@ function MenuTab({ bizId }) {
   };
 
   useEffect(() => { if (bizId) load(); }, [bizId]);
-
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -121,13 +130,7 @@ function MenuTab({ bizId }) {
 
   const addItem = async () => {
     if (!form.name.trim()) return;
-    await supabase.from("services").insert({
-      business_id: bizId,
-      name: form.name,
-      price: parseFloat(form.price) || 0,
-      description: form.description,
-      image_url: form.image_url,
-    });
+    await supabase.from("services").insert({ business_id: bizId, name: form.name, price: parseFloat(form.price) || 0, description: form.description, image_url: form.image_url });
     setForm({ name: "", price: "", description: "", image_url: "" });
     load();
   };
@@ -172,7 +175,6 @@ function MenuTab({ bizId }) {
   );
 }
 
-/* ── ORDERS TAB ── */
 function OrdersTab({ bizId }) {
   const [orders, setOrders] = useState([]);
 
@@ -185,9 +187,7 @@ function OrdersTab({ bizId }) {
 
   return (
     <div>
-      {orders.length === 0 ? (
-        <div style={{ color: MUTED }}>No orders yet.</div>
-      ) : (
+      {orders.length === 0 ? <div style={{ color: MUTED }}>No orders yet.</div> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {orders.map(order => (
             <div key={order.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 16 }}>
@@ -205,7 +205,6 @@ function OrdersTab({ bizId }) {
   );
 }
 
-/* ── BLOCKED DATES TAB ── */
 function BlockedDatesTab({ bizId }) {
   const [dates, setDates] = useState([]);
   const [newDate, setNewDate] = useState("");
@@ -247,7 +246,6 @@ function BlockedDatesTab({ bizId }) {
   );
 }
 
-/* ── MAIN ── */
 const TABS = ["overview", "tables", "menu", "orders", "blocked"];
 
 export default function DashboardPage() {
