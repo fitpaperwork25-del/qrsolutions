@@ -394,9 +394,14 @@ function TablesTab({ bizId, showToast }) {
         <div style={{ textAlign: "center", color: MUTED, padding: 60, fontFamily: "monospace", fontSize: 13 }}>NO TABLES YET</div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
-          {locations.map(loc => (
+          {locations.map(loc => {
+  const scanUrl = `${window.location.origin}/scan/${bizId}/${loc.slug}`;
+return (
             <div key={loc.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "16px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
+                <a href={scanUrl} target="_blank" style={{ fontSize: 11, color: "#4CAF50" }}>
+  Open Scan Page
+</a>
                 <div style={{ fontSize: 14, fontWeight: 700 }}>{loc.label}</div>
                 <div style={{ fontSize: 11, color: MUTED, fontFamily: "monospace", marginTop: 2 }}>{loc.slug}</div>
               </div>
