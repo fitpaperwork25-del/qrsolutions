@@ -104,15 +104,16 @@ function MenuTab({ bizId }) {
 
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
     const ext = file.name.split(".").pop();
     const path = `menu/${bizId}/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("menu-images").upload(path, file);
+    const { error } = await supabase.storage.from("service-images").upload(path, file);
     if (!error) {
-      const { data } = supabase.storage.from("menu-images").getPublicUrl(path);
+      const { data } = supabase.storage.from("service-images").getPublicUrl(path);
       setForm(f => ({ ...f, image_url: data.publicUrl }));
     }
     setUploading(false);
