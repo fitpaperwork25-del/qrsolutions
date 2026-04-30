@@ -68,7 +68,7 @@ export default function ScanPage() {
       .insert({
         location_id: location.id,
         total: total,
-        status: "new",
+        status: "pending",
         items: cart.map(c => ({ id: c.id, name: c.name, price: c.price, qty: c.qty })),
       })
       .select()
