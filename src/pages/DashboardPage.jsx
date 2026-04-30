@@ -15,7 +15,7 @@ function OrdersTab({ bizId }) {
 
       setOrders(data || []);
     };
-
+load();
     load();
   }, [bizId]);
 
