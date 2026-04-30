@@ -399,11 +399,13 @@ function TablesTab({ bizId, showToast }) {
 return (
             <div key={loc.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "16px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <a href={scanUrl} target="_blank" style={{ fontSize: 11, color: "#4CAF50" }}>
-  Open Scan Page
-</a>
-                <div style={{ fontSize: 14, fontWeight: 700 }}>{loc.label}</div>
-                <div style={{ fontSize: 11, color: MUTED, fontFamily: "monospace", marginTop: 2 }}>{loc.slug}</div>
+  <div style={{ fontSize: 14, fontWeight: 700 }}>{loc.label}</div>
+  <div style={{ fontSize: 11, color: MUTED, fontFamily: "monospace", marginTop: 2 }}>
+    {loc.slug}
+  </div>
+</div>
+                
+                
               </div>
               <button onClick={() => setConfirmDelete(loc.id)} style={btn({ width: 32, height: 32, background: "rgba(255,255,255,0.05)", color: "#FF5C5C", justifyContent: "center" })}>
                 <Icon name="trash" size={14} />
