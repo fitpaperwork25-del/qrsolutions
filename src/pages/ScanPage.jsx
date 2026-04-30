@@ -66,7 +66,6 @@ export default function ScanPage() {
     const { data: order } = await supabase
       .from("orders")
       .insert({
-        business_id: bizId,
         location_id: location.id,
         total: total,
         status: "pending",
@@ -107,13 +106,11 @@ export default function ScanPage() {
 
   return (
     <div style={{ background: BG, minHeight: "100vh", color: TEXT, fontFamily: "sans-serif" }}>
-      {/* HEADER */}
       <div style={{ background: SURFACE, borderBottom: `1px solid ${BORDER}`, padding: "16px 20px" }}>
         <div style={{ fontWeight: 900, fontSize: 18, color: ACCENT }}>Menu</div>
         <div style={{ color: MUTED, fontSize: 13, marginTop: 2 }}>{location.label}</div>
       </div>
 
-      {/* MENU ITEMS */}
       <div style={{ padding: 16, paddingBottom: cart.length > 0 ? 160 : 16 }}>
         {menuItems.length === 0 ? (
           <div style={{ color: MUTED, textAlign: "center", marginTop: 40 }}>No menu items yet.</div>
@@ -151,7 +148,6 @@ export default function ScanPage() {
         )}
       </div>
 
-      {/* CART / ORDER BAR */}
       {cart.length > 0 && (
         <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: SURFACE, borderTop: `1px solid ${BORDER}`, padding: 16 }}>
           <div style={{ marginBottom: 10 }}>
