@@ -53,7 +53,7 @@ export default function OnboardingPage() {
   };
 
   const uploadFile = async (file, path) => {
-    const { error } = await supabase.storage.from("service-images").upload(path, file);
+    const { error } = await supabase.storage.from("service-images").upload(path, file, { upsert: true });
     if (error) throw error;
     const { data } = supabase.storage.from("service-images").getPublicUrl(path);
     return data.publicUrl;
