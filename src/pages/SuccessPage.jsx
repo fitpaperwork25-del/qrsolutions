@@ -27,7 +27,7 @@ const steps = [
     title: "Log in to your dashboard",
     desc: "Use the email and password you just registered with.",
     action: "Go to Dashboard",
-    link: "/staff/login",
+    link: "/login",
   },
   {
     num: "02",
@@ -86,7 +86,6 @@ export default function SuccessPage() {
         }
       `}</style>
 
-      {/* NAV */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 5%", borderBottom: "1px solid #1a1a1a" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => navigate("/")}>
           <div style={{ color: "#E8C547" }}><QRIcon size={32} /></div>
@@ -96,7 +95,6 @@ export default function SuccessPage() {
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "80px 5%" }}>
 
-        {/* CHECK MARK */}
         <div className="fade-up" style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{
             width: 80, height: 80, borderRadius: "50%",
@@ -116,7 +114,6 @@ export default function SuccessPage() {
           </div>
         </div>
 
-        {/* HEADING */}
         <div className="fade-up-1" style={{ textAlign: "center", marginBottom: 16 }}>
           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 3, color: "#E8C547", marginBottom: 16 }}>PAYMENT CONFIRMED</div>
           <h1 style={{ fontSize: "clamp(36px, 6vw, 60px)", fontWeight: 800, lineHeight: 1.0, letterSpacing: -2 }}>
@@ -124,7 +121,6 @@ export default function SuccessPage() {
           </h1>
         </div>
 
-        {/* PLAN BADGE */}
         <div className="fade-up-2" style={{ textAlign: "center", marginBottom: 60 }}>
           <div style={{
             display: "inline-block",
@@ -140,7 +136,6 @@ export default function SuccessPage() {
           </p>
         </div>
 
-        {/* STEPS */}
         <div className="fade-up-3" style={{ marginBottom: 48 }}>
           <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 3, color: "#555", marginBottom: 20 }}>WHAT'S NEXT</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -164,9 +159,8 @@ export default function SuccessPage() {
           </div>
         </div>
 
-        {/* CTA */}
         <div className="fade-up-4" style={{ textAlign: "center" }}>
-          <button className="dash-btn" onClick={() => navigate("/staff/login")}>
+          <button className="dash-btn" onClick={() => navigate("/login")}>
             GO TO DASHBOARD →
           </button>
           <p style={{ color: "#444", fontSize: 13, fontFamily: "'Space Mono', monospace", marginTop: 20 }}>
