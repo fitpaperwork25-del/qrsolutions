@@ -66,6 +66,7 @@ export default function ScanPage() {
     const { data: order } = await supabase
       .from("orders")
       .insert({
+        business_id: bizId,
         location_id: location.id,
         total: total,
         status: "pending",
