@@ -280,7 +280,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!session?.user?.email) return;
-    supabase.from("businesses").select("*").eq("email", session.user.email)
+    supabase.from("businesses").select("*").eq("id", session.user.id)
       .then(({ data }) => { if (data?.length) setBiz(data[0]); });
   }, [session]);
 
