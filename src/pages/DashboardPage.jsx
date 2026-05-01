@@ -182,9 +182,8 @@ function OrdersTab({ bizId }) {
     const { data: locs } = await supabase.from("locations").select("id").eq("business_id", bizId);
     const locationIds = (locs || []).map(l => l.id);
     if (locationIds.length === 0) { setOrders([]); return; }
-    const { data } = await supabase.from("orders").select("*, locations(label)").in("location_id", locationIds).order("created_at", { ascending: false });
-    setOrders(data || []);
-  };
+    const { data } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
+  };setOrders(data || []);
 
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
