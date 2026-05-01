@@ -182,8 +182,8 @@ function OrdersTab({ bizId }) {
     const { data: locs } = await supabase.from("locations").select("id").eq("business_id", bizId);
     const locationIds = (locs || []).map(l => l.id);
     if (locationIds.length === 0) { setOrders([]); return; }
-    const { data } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
-  };setOrders(data || []);
+   const { data: ordersData } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
+setOrders(ordersData || []);
 
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
@@ -284,7 +284,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [biz, setBiz] = useState(null);
   const [tab, setTab] = useState("overview");
-
+};
   useEffect(() => {
     if (!session?.user?.email) return;
     supabase.from("businesses").select("*").eq("id", session.user.id)
