@@ -10,6 +10,7 @@ import MenuPage from "./pages/MenuPage";
 import SettingsPage from "./pages/SettingsPage";
 import SuccessPage from "./pages/SuccessPage";
 import StaffDashboardPage from "./pages/StaffDashboardPage";
+import OnboardingPage from "./pages/OnboardingPage";
 
 import { useAuth } from "./lib/useAuth";
 
@@ -32,6 +33,11 @@ export default function App() {
       <Route path="/success" element={<SuccessPage />} />
 
       {/* PROTECTED (OWNER) */}
+      <Route
+        path="/onboarding"
+        element={session ? <OnboardingPage /> : <Navigate to="/login" replace />}
+      />
+
       <Route
         path="/dashboard"
         element={session ? <DashboardPage /> : <Navigate to="/login" replace />}
