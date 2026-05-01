@@ -184,7 +184,7 @@ function OrdersTab({ bizId }) {
     if (locationIds.length === 0) { setOrders([]); return; }
    const { data: ordersData } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
 setOrders(ordersData || []);
-
+};
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
   const updateStatus = async (orderId, status) => {
@@ -284,7 +284,6 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [biz, setBiz] = useState(null);
   const [tab, setTab] = useState("overview");
-};
   useEffect(() => {
     if (!session?.user?.email) return;
     supabase.from("businesses").select("*").eq("id", session.user.id)
