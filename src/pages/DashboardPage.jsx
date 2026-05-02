@@ -185,7 +185,13 @@ function OrdersTab({ bizId }) {
     if (locationIds.length === 0) { setOrders([]); return; }
    const { data: ordersData } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
 setOrders((ordersData || []).map(o => ({ ...o, location_label: locMap[o.location_id] || "Unknown table" })));
-};
+};useEffect(() => {
+  if (!bizId) return;
+  const channel = supabase.channel("orders-realtime")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, () => { load(); })
+    .subscribe();
+  return () => supabase.removeChannel(channel);
+}, [bizId]);
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
   const updateStatus = async (orderId, status) => {
