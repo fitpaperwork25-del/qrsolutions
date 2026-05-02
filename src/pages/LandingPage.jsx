@@ -106,7 +106,7 @@ export default function LandingPage() {
         </div>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           <button className="nav-btn" onClick={() => navigate("/login")}>Log In</button>
-          <button className="cta-btn cta-btn-nav" style={{ padding: "10px 20px", fontSize: 14 }} onClick={() => handlePlan("starter")}>Start Free</button>
+          <button className="cta-btn cta-btn-nav" style={{ padding: "10px 20px", fontSize: 14 }} onClick={() => navigate("/register?trial=true")}>Start Free</button>
         </div>
       </nav>
 
