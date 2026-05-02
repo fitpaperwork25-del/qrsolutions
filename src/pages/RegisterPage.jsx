@@ -3,9 +3,11 @@ import { useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 export default function RegisterPage() {
+  
+const isTrial = params.get("trial") === "true";
   const [searchParams] = useSearchParams();
 
-  const isTrial = searchParams.get("trial") === "true";
+  
   const plan = isTrial ? "trial" : searchParams.get("plan") || "pro";
 
   const [step, setStep] = useState(1);
@@ -46,21 +48,13 @@ export default function RegisterPage() {
        
         plan: isTrial ? "trial" : plan,
         status: isTrial ? "trial" : "pending",
+        trial_started_at: isTrial ? new Date().toISOString() : null,
+trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null,
       }); 
 
       if (dbError) throw dbError;
 
-      // 3. TRIAL FLOW (NO STRIPE)
-      if (isTrial) {
-        await supabase
-          .from("businesses")
-          .upsert({ plan: "starter", status: "trial" })
-          trial_started_at: isTrial ? new Date().toISOString() : null,
-trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null,
-          .eq("id", authData.user.id);
-
-        window.location.href = "/dashboard";
-        return;
+   
       }
 
       // 4. PAID FLOW (STRIPE)
