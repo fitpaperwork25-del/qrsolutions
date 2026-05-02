@@ -286,10 +286,9 @@ export default function DashboardPage() {
   const [tab, setTab] = useState("overview");
   useEffect(() => {
     if (!session?.user?.email) return;
-    supabase.from("businesses").select("*").eq("id", session.user.id)
-      .then(({ data }) => { if (data?.length) setBiz(data[0]); });
-  }, [session]);
-
+    
+  supabase.from("businesses").select("*").eq("email", session.user.email).then(({ data }) => { if (data?.length) setBiz(data[0]); });
+}, [session]);
   return (
     <div style={{ background: BG, minHeight: "100vh", color: TEXT, fontFamily: "sans-serif" }}>
       <div style={{ borderBottom: `1px solid ${BORDER}`, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
