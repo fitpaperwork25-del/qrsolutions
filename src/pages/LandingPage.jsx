@@ -121,7 +121,7 @@ export default function LandingPage() {
             QR codes for your restaurant, business, event, or your Nissan Altima. If it exists, we can put a square on it.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <button className="cta-btn" onClick={() => handlePlan("pro")}>GET SQUARED — FROM $19/MO</button>
+            <button className="cta-btn" onClick={() => navigate("/register?trial=true")}>GET SQUARED — FROM $19/MO</button>
             <span style={{ color: "#555", fontSize: 13, fontFamily: "'Space Mono', monospace" }}>No contracts. Cancel anytime.</span>
           </div>
         </div>
@@ -203,7 +203,7 @@ export default function LandingPage() {
         <p style={{ color: "#3a3a1a", fontSize: 18, maxWidth: 500, margin: "0 auto 40px" }}>
           Join businesses who stopped handing out sticky laminated cards.
         </p>
-        <button className="cta-btn" style={{ background: "#080808", color: "#E8C547" }} onClick={() => handlePlan("pro")}>START FROM $19/MONTH →</button>
+        <button className="cta-btn" style={{ background: "#080808", color: "#E8C547" }} onClick={() => navigate("/register?trial=true")}>START FROM $19/MONTH →</button>
       </section>
 
       {/* FOOTER */}
