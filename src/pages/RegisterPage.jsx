@@ -38,14 +38,15 @@ export default function RegisterPage() {
       if (authError) throw authError;
 
       // 2. Create business
-      const { error: dbError } = await supabase.from("businesses").insert({
+      const { error: dbError } = await supabase.from("businesses").upsert({
         id: authData.user.id,
         name: form.businessName,
         type: form.businessType,
         email: form.email,
-        plan: plan,
-        status: "pending",
-      });
+       
+        plan: isTrial ? "trial" : plan,
+        status: isTrial ? "trial" : "pending",
+      }); 
 
       if (dbError) throw dbError;
 
