@@ -179,11 +179,12 @@ function OrdersTab({ bizId }) {
   const [orders, setOrders] = useState([]);
 
   const load = async () => {
-    const { data: locs } = await supabase.from("locations").select("id").eq("business_id", bizId);
+    const { data: locs } = await supabase.from("locations").select("id, label").eq("business_id", bizId);
     const locationIds = (locs || []).map(l => l.id);
+    const locMap = Object.fromEntries((locs || []).map(l => [l.id, l.label]));
     if (locationIds.length === 0) { setOrders([]); return; }
    const { data: ordersData } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
-setOrders(ordersData || []);
+setOrders((ordersData || []).map(o => ({ ...o, location_label: locMap[o.location_id] || "Unknown table" })));
 };
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
