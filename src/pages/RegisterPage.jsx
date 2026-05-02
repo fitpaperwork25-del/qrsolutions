@@ -54,7 +54,9 @@ export default function RegisterPage() {
       if (isTrial) {
         await supabase
           .from("businesses")
-          .update({ plan: "starter", status: "trial" })
+          .upsert({ plan: "starter", status: "trial" })
+          trial_started_at: isTrial ? new Date().toISOString() : null,
+trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null,
           .eq("id", authData.user.id);
 
         window.location.href = "/dashboard";
