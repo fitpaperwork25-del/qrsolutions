@@ -294,7 +294,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!session?.user?.email) return;
     
-  supabase.from("businesses").select("*").eq("id", session.user.id).then(({ data }) => { if (data?.length) setBiz(data[0]); });
+  supabase.from("businesses").select("*").eq("email", session.user.email).then(({ data }) => { if (data?.length) setBiz(data[0]); });
 }, [session]);
   return (
     <div style={{ background: BG, minHeight: "100vh", color: TEXT, fontFamily: "sans-serif" }}>
