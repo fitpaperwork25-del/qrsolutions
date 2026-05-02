@@ -208,7 +208,7 @@ setOrders((ordersData || []).map(o => ({ ...o, location_label: locMap[o.location
           {orders.map(order => (
             <div key={order.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontWeight: 700 }}>{order.locations?.label || "Unknown table"}</span>
+                <span style={{ fontWeight: 700 }}>{order.location_label || "Unknown table"}</span>
                 <span style={{ color: ACCENT }}>${parseFloat(order.total || 0).toFixed(2)}</span>
               </div>
               <div style={{ fontSize: 12, color: MUTED }}>{new Date(order.created_at).toLocaleString()}</div>
@@ -288,7 +288,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!session?.user?.email) return;
     
-  supabase.from("businesses").select("*").eq("email", session.user.email).then(({ data }) => { if (data?.length) setBiz(data[0]); });
+  supabase.from("businesses").select("*").eq("id", session.user.id).then(({ data }) => { if (data?.length) setBiz(data[0]); });
 }, [session]);
   return (
     <div style={{ background: BG, minHeight: "100vh", color: TEXT, fontFamily: "sans-serif" }}>
