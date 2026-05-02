@@ -294,7 +294,8 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!session?.user?.email) return;
     
-  supabase.from("businesses").select("*").eq("email", session.user.email).then(({ data }) => {
+  supabase.from("businesses").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false })
+.limit(1).then(({ data }) => {
   console.log("DATA:", data);
   if (data?.length) setBiz(data[0]);
 });
