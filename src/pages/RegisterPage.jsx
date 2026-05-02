@@ -4,7 +4,8 @@ import { supabase } from "../lib/supabase";
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
-  const plan = searchParams.get("plan") || "pro"; // default to pro if none
+  const isTrial = searchParams.get("trial") === "true";
+const plan = isTrial ? "trial" : searchParams.get("plan") || "pro"; // default to pro if none
 
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -60,7 +61,7 @@ export default function RegisterPage() {
     setLoading(false);
   };
 
-  const planLabel = { starter: "$19/mo", pro: "$49/mo", enterprise: "$99/mo" }[plan] || "";
+  const planLabel = { trial: "7-day free trial", starter: "$19/mo", pro: "$49/mo", enterprise: "$99/mo" }[plan] || "";
 
   return (
     <div style={{ maxWidth: 400, margin: "60px auto", padding: 24, fontFamily: "sans-serif" }}>
@@ -83,7 +84,7 @@ export default function RegisterPage() {
           <input name="email" placeholder="Email" value={form.email} onChange={handleChange} style={{ display: "block", width: "100%", marginBottom: 12, padding: 8 }} />
           <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} style={{ display: "block", width: "100%", marginBottom: 12, padding: 8 }} />
           <button onClick={handleSubmit} disabled={loading} style={{ padding: "10px 20px" }}>
-            {loading ? "Processing..." : `Register & Pay ${planLabel}`}
+            {loading ? "Processing..." : isTrial ? "Start 7-Day Free Trial" : `Register & Pay ${planLabel}`}
           </button>
         </>
       )}
