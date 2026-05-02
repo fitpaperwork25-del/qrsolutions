@@ -294,7 +294,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!session?.user?.email) return;
     
-  supabase.from("businesses").select("*")id = auth user id.order("created_at", { ascending: false })
+  supabase.from("businesses").select("*").eq("id", session.user.id).order("created_at", { ascending: false })
 .limit(1).then(({ data }) => {
   console.log("DATA:", data);
   if (data?.length) setBiz(data[0]);
