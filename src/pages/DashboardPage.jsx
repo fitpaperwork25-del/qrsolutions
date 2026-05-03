@@ -120,6 +120,9 @@ function MenuTab({ bizId }) {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState({ name: "", price: "", description: "", image_url: "" });
   const [uploading, setUploading] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [editForm, setEditForm] = useState({ name: "", price: "", description: "", image_url: "" });
+  const [editUploading, setEditUploading] = useState(false);
 
   const load = async () => {
     const { data } = await supabase.from("services").select("*").eq("business_id", bizId).order("name");
@@ -142,6 +145,20 @@ function MenuTab({ bizId }) {
     setUploading(false);
   };
 
+  const handleEditImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setEditUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `menu/${bizId}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("service-images").upload(path, file);
+    if (!error) {
+      const { data } = supabase.storage.from("service-images").getPublicUrl(path);
+      setEditForm(f => ({ ...f, image_url: data.publicUrl }));
+    }
+    setEditUploading(false);
+  };
+
   const addItem = async () => {
     if (!form.name.trim()) return;
     await supabase.from("services").insert({ business_id: bizId, name: form.name, price: parseFloat(form.price) || 0, description: form.description, image_url: form.image_url });
@@ -151,6 +168,27 @@ function MenuTab({ bizId }) {
 
   const deleteItem = async (id) => {
     await supabase.from("services").delete().eq("id", id);
+    load();
+  };
+
+  const startEdit = (item) => {
+    setEditId(item.id);
+    setEditForm({ name: item.name, price: item.price, description: item.description || "", image_url: item.image_url || "" });
+  };
+
+  const cancelEdit = () => {
+    setEditId(null);
+    setEditForm({ name: "", price: "", description: "", image_url: "" });
+  };
+
+  const saveEdit = async () => {
+    await supabase.from("services").update({
+      name: editForm.name,
+      price: parseFloat(editForm.price) || 0,
+      description: editForm.description,
+      image_url: editForm.image_url,
+    }).eq("id", editId);
+    cancelEdit();
     load();
   };
 
@@ -170,18 +208,45 @@ function MenuTab({ bizId }) {
         </div>
         <button onClick={addItem} style={btn({ background: ACCENT, color: BG, padding: "10px 20px" })}>Add Item</button>
       </div>
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 12 }}>
         {items.map(item => (
-          <div key={item.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, overflow: "hidden" }}>
-            {item.image_url && <img src={item.image_url} alt={item.name} style={{ width: "100%", height: 140, objectFit: "cover" }} />}
-            <div style={{ padding: 16, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div>
-                <div style={{ fontWeight: 700 }}>{item.name}</div>
-                <div style={{ color: ACCENT, marginTop: 4 }}>${parseFloat(item.price || 0).toFixed(2)}</div>
-                <div style={{ fontSize: 12, color: MUTED, marginTop: 4 }}>{item.description}</div>
+          <div key={item.id} style={{ background: SURFACE, border: `1px solid ${editId === item.id ? ACCENT : BORDER}`, borderRadius: 10, overflow: "hidden" }}>
+            {editId === item.id ? (
+              <div style={{ padding: 16 }}>
+                <div style={{ fontWeight: 700, fontSize: 12, color: ACCENT, marginBottom: 12 }}>Edit Item</div>
+                <input style={{ ...inputStyle, marginBottom: 8 }} value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} placeholder="Name" />
+                <input style={{ ...inputStyle, marginBottom: 8 }} type="number" value={editForm.price} onChange={e => setEditForm({ ...editForm, price: e.target.value })} placeholder="Price" />
+                <input style={{ ...inputStyle, marginBottom: 8 }} value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} placeholder="Description" />
+                <div style={{ marginBottom: 10 }}>
+                  <div style={{ color: MUTED, fontSize: 12, marginBottom: 4 }}>Photo</div>
+                  <input type="file" accept="image/*" onChange={handleEditImageUpload} style={{ color: TEXT, fontSize: 12 }} />
+                  {editUploading && <span style={{ color: MUTED, fontSize: 12 }}>Uploading...</span>}
+                  {editForm.image_url && <img src={editForm.image_url} alt="preview" style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 6, marginTop: 6, display: "block" }} />}
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={saveEdit} style={btn({ background: ACCENT, color: BG, padding: "8px 14px", fontSize: 13, flex: 1 })}>Save</button>
+                  <button onClick={cancelEdit} style={btn({ background: "#1a1a1a", color: MUTED, padding: "8px 14px", fontSize: 13, border: `1px solid ${BORDER}` })}>Cancel</button>
+                </div>
               </div>
-              <button onClick={() => deleteItem(item.id)} style={btn({ background: "#1a1a1a", color: "red", width: 32, height: 32 })}>🗑</button>
-            </div>
+            ) : (
+              <>
+                {item.image_url && <img src={item.image_url} alt={item.name} style={{ width: "100%", height: 140, objectFit: "cover" }} />}
+                <div style={{ padding: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{item.name}</div>
+                      <div style={{ color: ACCENT, marginTop: 4 }}>${parseFloat(item.price || 0).toFixed(2)}</div>
+                      <div style={{ fontSize: 12, color: MUTED, marginTop: 4 }}>{item.description}</div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <button onClick={() => startEdit(item)} style={btn({ background: "#1a1a1a", color: ACCENT, width: 32, height: 32, fontSize: 14, border: `1px solid ${BORDER}` })}>✏</button>
+                      <button onClick={() => deleteItem(item.id)} style={btn({ background: "#1a1a1a", color: "red", width: 32, height: 32 })}>🗑</button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
