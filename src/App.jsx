@@ -10,7 +10,10 @@ import MenuPage from "./pages/MenuPage";
 import SettingsPage from "./pages/SettingsPage";
 import SuccessPage from "./pages/SuccessPage";
 import StaffDashboardPage from "./pages/StaffDashboardPage";
+import HelpPage from "./pages/HelpPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import AdminPage from "./pages/AdminPage";
 
 import { useAuth } from "./lib/useAuth";
 
@@ -22,6 +25,9 @@ export default function App() {
   return (
     <Routes>
 
+      {/* ADMIN */}
+      <Route path="/admin" element={<AdminPage />} />
+
       {/* STAFF */}
       <Route path="/staff" element={<StaffDashboardPage />} />
 
@@ -29,6 +35,9 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/scan/:bizId/:locSlug" element={<ScanPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/success" element={<SuccessPage />} />
+      <Route path="/help" element={<HelpPage />} />
+<Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/success" element={<SuccessPage />} />
 
@@ -37,22 +46,18 @@ export default function App() {
         path="/onboarding"
         element={session ? <OnboardingPage /> : <Navigate to="/login" replace />}
       />
-
       <Route
         path="/dashboard"
         element={session ? <DashboardPage /> : <Navigate to="/login" replace />}
       />
-
       <Route
         path="/qr"
         element={session ? <QRGeneratorPage /> : <Navigate to="/login" replace />}
       />
-
       <Route
         path="/menu"
         element={session ? <MenuPage /> : <Navigate to="/login" replace />}
       />
-
       <Route
         path="/settings"
         element={session ? <SettingsPage /> : <Navigate to="/login" replace />}

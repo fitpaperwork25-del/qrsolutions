@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 export default function RegisterPage() {
-  
-const isTrial = params.get("trial") === "true";
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  
+  const isTrial = searchParams.get("trial") === "true";
   const plan = isTrial ? "trial" : searchParams.get("plan") || "pro";
 
   const [step, setStep] = useState(1);
@@ -17,7 +16,6 @@ const isTrial = params.get("trial") === "true";
     email: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,12 +29,10 @@ const isTrial = params.get("trial") === "true";
 
     try {
       // 1. Create user
-      const { data: authData, error: authError } =
-        await supabase.auth.signUp({
-          email: form.email,
-          password: form.password,
-        });
-
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+      });
       if (authError) throw authError;
 
       // 2. Create business
@@ -45,19 +41,20 @@ const isTrial = params.get("trial") === "true";
         name: form.businessName,
         type: form.businessType,
         email: form.email,
-       
         plan: isTrial ? "trial" : plan,
         status: isTrial ? "trial" : "pending",
         trial_started_at: isTrial ? new Date().toISOString() : null,
-trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null,
-      }); 
-
+        trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null,
+      });
       if (dbError) throw dbError;
 
-   
+      // 3. TRIAL FLOW — go straight to dashboard
+      if (isTrial) {
+        navigate("/dashboard");
+        return;
       }
 
-      // 4. PAID FLOW (STRIPE)
+      // 4. PAID FLOW — Stripe checkout
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`,
         {
@@ -75,10 +72,9 @@ trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOStr
       );
 
       const data = await response.json();
-
       if (!data.url) throw new Error("No checkout URL returned");
-
       window.location.href = data.url;
+
     } catch (err) {
       setError(err.message);
     }
@@ -96,25 +92,13 @@ trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOStr
   return (
     <div style={{ maxWidth: 400, margin: "60px auto", padding: 24 }}>
       <h2>Register Your Business</h2>
-
-      <p>
-        Selected plan: <strong>{plan}</strong> — {planLabel}
-      </p>
-
+      <p>Selected plan: <strong>{plan}</strong> — {planLabel}</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {step === 1 && (
         <>
-          <input
-            name="businessName"
-            placeholder="Business Name"
-            onChange={handleChange}
-          />
-          <input
-            name="businessType"
-            placeholder="Business Type"
-            onChange={handleChange}
-          />
+          <input name="businessName" placeholder="Business Name" onChange={handleChange} />
+          <input name="businessType" placeholder="Business Type" onChange={handleChange} />
           <button onClick={() => setStep(2)}>Next</button>
         </>
       )}
@@ -122,18 +106,9 @@ trial_ends_at: isTrial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOStr
       {step === 2 && (
         <>
           <input name="email" placeholder="Email" onChange={handleChange} />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            onChange={handleChange}
-          />
+          <input name="password" type="password" placeholder="Password" onChange={handleChange} />
           <button onClick={handleSubmit} disabled={loading}>
-            {loading
-              ? "Processing..."
-              : isTrial
-              ? "Start 7-Day Free Trial"
-              : `Register & Pay ${planLabel}`}
+            {loading ? "Processing..." : isTrial ? "Start 7-Day Free Trial" : `Register & Pay ${planLabel}`}
           </button>
         </>
       )}

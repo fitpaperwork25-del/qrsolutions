@@ -23,14 +23,28 @@ const inputStyle = {
   padding: "10px", color: TEXT, boxSizing: "border-box",
 };
 
+function getTrialDaysLeft(trial_ends_at) {
+  if (!trial_ends_at) return null;
+  const diff = new Date(trial_ends_at) - new Date();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
 function OverviewTab({ biz }) {
   if (!biz) return <div style={{ color: MUTED }}>Loading...</div>;
+  const daysLeft = biz.plan === "trial" ? getTrialDaysLeft(biz.trial_ends_at) : null;
+  const rows = [
+    ["Business Name", biz.name],
+    ["Email", biz.email],
+    ["Plan", biz.plan || "Free"],
+    ["Status", biz.active ? "Active" : "Inactive"],
+  ];
+  if (daysLeft !== null) rows.push(["Trial Days Left", daysLeft === 0 ? "Expired" : `${daysLeft} day${daysLeft === 1 ? "" : "s"}`]);
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 16 }}>
-      {[["Business Name", biz.name], ["Email", biz.email], ["Plan", biz.plan || "Free"], ["Status", biz.active ? "Active" : "Inactive"]].map(([label, value]) => (
-        <div key={label} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 20 }}>
+      {rows.map(([label, value]) => (
+        <div key={label} style={{ background: SURFACE, border: `1px solid ${label === "Trial Days Left" && daysLeft === 0 ? "#f44336" : BORDER}`, borderRadius: 10, padding: 20 }}>
           <div style={{ color: MUTED, fontSize: 12, marginBottom: 6 }}>{label}</div>
-          <div style={{ fontWeight: 700 }}>{value || "—"}</div>
+          <div style={{ fontWeight: 700, color: label === "Trial Days Left" && daysLeft <= 2 ? "#f44336" : TEXT }}>{value || "—"}</div>
         </div>
       ))}
     </div>
@@ -183,15 +197,18 @@ function OrdersTab({ bizId }) {
     const locationIds = (locs || []).map(l => l.id);
     const locMap = Object.fromEntries((locs || []).map(l => [l.id, l.label]));
     if (locationIds.length === 0) { setOrders([]); return; }
-   const { data: ordersData } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
-setOrders((ordersData || []).map(o => ({ ...o, location_label: locMap[o.location_id] || "Unknown table" })));
-};useEffect(() => {
-  if (!bizId) return;
-  const channel = supabase.channel("orders-realtime")
-    .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, () => { load(); })
-    .subscribe();
-  return () => supabase.removeChannel(channel);
-}, [bizId]);
+    const { data: ordersData } = await supabase.from("orders").select("*").in("location_id", locationIds).order("created_at", { ascending: false });
+    setOrders((ordersData || []).map(o => ({ ...o, location_label: locMap[o.location_id] || "Unknown table" })));
+  };
+
+  useEffect(() => {
+    if (!bizId) return;
+    const channel = supabase.channel("orders-realtime")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, () => { load(); })
+      .subscribe();
+    return () => supabase.removeChannel(channel);
+  }, [bizId]);
+
   useEffect(() => { if (bizId) load(); }, [bizId]);
 
   const updateStatus = async (orderId, status) => {
@@ -284,6 +301,21 @@ function BlockedDatesTab({ bizId }) {
   );
 }
 
+function TrialExpiredGate({ onUpgrade }) {
+  return (
+    <div style={{ minHeight: "100vh", background: BG, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif" }}>
+      <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 16, padding: 48, textAlign: "center", maxWidth: 420 }}>
+        <div style={{ fontSize: 40, marginBottom: 16 }}>⏱</div>
+        <div style={{ fontWeight: 900, fontSize: 22, color: TEXT, marginBottom: 10 }}>Your trial has ended</div>
+        <div style={{ color: MUTED, fontSize: 14, marginBottom: 32 }}>Upgrade to keep access to your dashboard, QR codes, and orders.</div>
+        <button onClick={onUpgrade} style={btn({ background: ACCENT, color: BG, padding: "14px 32px", fontSize: 16, width: "100%", borderRadius: 10 })}>
+          Upgrade Now
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const TABS = ["overview", "tables", "menu", "orders", "blocked"];
 
 export default function DashboardPage() {
@@ -291,24 +323,43 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [biz, setBiz] = useState(null);
   const [tab, setTab] = useState("overview");
+  const [trialExpired, setTrialExpired] = useState(false);
+
   useEffect(() => {
     if (!session?.user?.email) return;
-    
-  supabase
-  .from("businesses")
-  .select("*")
-  .eq("email", session.user.email)
-  .order("created_at", { ascending: false })
-.limit(1).then(({ data }) => {
-  console.log("DATA:", data);
-  if (data?.length) setBiz(data[0]);
-});
-}, [session]);
+    supabase
+      .from("businesses")
+      .select("*")
+      .eq("email", session.user.email)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (data?.length) {
+          const b = data[0];
+          setBiz(b);
+          if (b.plan === "trial" && b.trial_ends_at && new Date(b.trial_ends_at) < new Date()) {
+            setTrialExpired(true);
+          }
+        }
+      });
+  }, [session]);
+
+  if (trialExpired) {
+    return <TrialExpiredGate onUpgrade={() => navigate("/pricing")} />;
+  }
+
   return (
     <div style={{ background: BG, minHeight: "100vh", color: TEXT, fontFamily: "sans-serif" }}>
       <div style={{ borderBottom: `1px solid ${BORDER}`, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ fontWeight: 900, fontSize: 20, color: ACCENT }}>QRS Dashboard</div>
-        <button onClick={async () => { await signOut(); navigate("/"); }} style={btn({ background: "#1a1a1a", color: TEXT, padding: "8px 16px", border: `1px solid ${BORDER}` })}>Sign out</button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={() => navigate("/help")} style={btn({ background: "#1a1a1a", color: MUTED, padding: "8px 16px", border: `1px solid ${BORDER}`, fontSize: 13 })}>
+            ? Help
+          </button>
+          <button onClick={async () => { await signOut(); navigate("/"); }} style={btn({ background: "#1a1a1a", color: TEXT, padding: "8px 16px", border: `1px solid ${BORDER}` })}>
+            Sign out
+          </button>
+        </div>
       </div>
       <div style={{ borderBottom: `1px solid ${BORDER}`, display: "flex", padding: "0 24px" }}>
         {TABS.map(t => (
